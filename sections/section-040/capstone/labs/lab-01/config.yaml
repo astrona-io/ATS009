@@ -1,0 +1,27 @@
+metadata:
+  name: "ats-009-lab-008"
+  docs:
+    solution: "solution.md"
+    question: "question.md"
+
+bootstrap:
+  init:
+    - name: "install-kyverno"
+      description: "Installs Kyverno onto the kind cluster"
+      type: "file"
+      source: "bootstrap/01-install-kyverno.sh"
+    - name: "install-kyverno-cli"
+      description: "Installs the kyverno CLI binary"
+      type: "file"
+      source: "bootstrap/02-install-kyverno-cli.sh"
+    - name: "seed-fixture"
+      description: "Writes the context.json fixture used by the capstone exercises"
+      type: "file"
+      source: "bootstrap/03-seed-fixture.sh"
+
+validation:
+  scripts:
+    - name: "verify-jp-capstone-answers"
+      description: "Confirms each kyverno jp query capstone answer file holds the correct value"
+      type: "file"
+      source: "validation/validate-completed.sh"

@@ -1,0 +1,238 @@
+training:
+  id: ATS009
+  title: "KCA: Kyverno CLI"
+  description: >
+    Training material covering the Kyverno CLI domain for the Kyverno
+    Certified Associate (KCA) learning path, with hands-on labs for each
+    competency running on a kind Kubernetes cluster.
+
+  certification:
+    name: Kyverno Certified Associate
+    code: KCA
+    provider: Kyverno Project (CNCF Sandbox)
+    domain: Kyverno CLI
+    weight: 100
+
+modules:
+  - id: module-010
+    title: "Section 010: Installing Kyverno CLI"
+    description: >
+      Get the kyverno binary onto your machine and verify it actually
+      works: the release binary, Homebrew, the install script, and the
+      krew plugin, plus reading kyverno version output and navigating the
+      CLI's subcommand tree.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Module 1: Installing & Verifying the Kyverno CLI"
+        path: sections/section-010/module-01/course.md
+
+      - type: reading
+        title: "Module 1.1: Installation Methods"
+        path: sections/section-010/module-01/course-01-installation-methods.md
+
+      - type: reading
+        title: "Module 1.2: Verifying Installation & CLI Structure"
+        path: sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
+
+      - type: reading
+        title: Question
+        path: sections/section-010/module-01/labs/lab-01/question.md
+
+      - type: reading
+        title: Solution Walkthrough
+        path: sections/section-010/module-01/labs/lab-01/solution.md
+
+      - type: lab
+        title: "Kyverno CLI Installation Lab"
+        path: sections/section-010/module-01/labs/lab-01
+
+      - type: reading
+        title: "Section 010 Knowledge Check: Installing Kyverno CLI"
+        path: sections/section-010/quiz.md
+
+      - type: reading
+        title: Question
+        path: sections/section-010/capstone/labs/lab-01/question.md
+
+      - type: reading
+        title: Solution Walkthrough
+        path: sections/section-010/capstone/labs/lab-01/solution.md
+
+      - type: lab
+        title: "Kyverno CLI Installation Capstone Lab"
+        path: sections/section-010/capstone/labs/lab-01
+
+  - id: module-020
+    title: "Section 020: kyverno apply"
+    description: >
+      Use kyverno apply to test policies against resources offline, no
+      cluster required, then point the same command at a live cluster
+      with --cluster to evaluate real objects and emit PolicyReports.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Module 1: Applying Policies with the Kyverno CLI"
+        path: sections/section-020/module-01/course.md
+
+      - type: reading
+        title: "Module 1.1: Offline Policy Apply"
+        path: sections/section-020/module-01/course-01-offline-policy-apply.md
+
+      - type: reading
+        title: "Module 1.2: Applying Against a Live Cluster & Policy Reports"
+        path: sections/section-020/module-01/course-02-applying-against-a-live-cluster-and-policy-reports.md
+
+      - type: reading
+        title: Question
+        path: sections/section-020/module-01/labs/lab-01/question.md
+
+      - type: reading
+        title: Solution Walkthrough
+        path: sections/section-020/module-01/labs/lab-01/solution.md
+
+      - type: lab
+        title: "Offline & Cluster Policy Apply Lab"
+        path: sections/section-020/module-01/labs/lab-01
+
+      - type: reading
+        title: "Section 020 Knowledge Check: kyverno apply"
+        path: sections/section-020/quiz.md
+
+      - type: reading
+        title: Question
+        path: sections/section-020/capstone/labs/lab-01/question.md
+
+      - type: reading
+        title: Solution Walkthrough
+        path: sections/section-020/capstone/labs/lab-01/solution.md
+
+      - type: lab
+        title: "kyverno apply Capstone Lab"
+        path: sections/section-020/capstone/labs/lab-01
+
+  - id: module-030
+    title: "Section 030: kyverno test"
+    description: >
+      Author a kyverno-test.yaml test manifest that declares expected
+      pass/fail/skip results for a set of policies and resources, then run
+      it locally or straight from a Git repository and read the results
+      the way a CI pipeline would.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-030/README.md
+
+      - type: reading
+        title: "Module 1: Writing & Running Kyverno Test Suites"
+        path: sections/section-030/module-01/course.md
+
+      - type: reading
+        title: "Module 1.1: Test Manifest Anatomy"
+        path: sections/section-030/module-01/course-01-test-manifest-anatomy.md
+
+      - type: reading
+        title: "Module 1.2: Running & Interpreting Test Results"
+        path: sections/section-030/module-01/course-02-running-and-interpreting-test-results.md
+
+      - type: reading
+        title: Question
+        path: sections/section-030/module-01/labs/lab-01/question.md
+
+      - type: reading
+        title: Solution Walkthrough
+        path: sections/section-030/module-01/labs/lab-01/solution.md
+
+      - type: lab
+        title: "Kyverno Test Suite Lab"
+        path: sections/section-030/module-01/labs/lab-01
+
+      - type: reading
+        title: "Section 030 Knowledge Check: kyverno test"
+        path: sections/section-030/quiz.md
+
+      - type: reading
+        title: Question
+        path: sections/section-030/capstone/labs/lab-01/question.md
+
+      - type: reading
+        title: Solution Walkthrough
+        path: sections/section-030/capstone/labs/lab-01/solution.md
+
+      - type: lab
+        title: "kyverno test Capstone Lab"
+        path: sections/section-030/capstone/labs/lab-01
+
+  - id: module-040
+    title: "Section 040: kyverno jp"
+    description: >
+      Debug the JMESPath expressions Kyverno policies rely on before they
+      ever touch a cluster: querying JSON with kyverno jp query, and using
+      Kyverno's custom JMESPath functions the same way context and
+      preconditions blocks do.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-040/README.md
+
+      - type: reading
+        title: "Module 1: JMESPath with the Kyverno CLI"
+        path: sections/section-040/module-01/course.md
+
+      - type: reading
+        title: "Module 1.1: JMESPath Fundamentals via kyverno jp query"
+        path: sections/section-040/module-01/course-01-jmespath-fundamentals-via-kyverno-jp-query.md
+
+      - type: reading
+        title: "Module 1.2: Kyverno's Custom JMESPath Functions"
+        path: sections/section-040/module-01/course-02-kyvernos-custom-jmespath-functions.md
+
+      - type: reading
+        title: Question
+        path: sections/section-040/module-01/labs/lab-01/question.md
+
+      - type: reading
+        title: Solution Walkthrough
+        path: sections/section-040/module-01/labs/lab-01/solution.md
+
+      - type: lab
+        title: "kyverno jp Query Lab"
+        path: sections/section-040/module-01/labs/lab-01
+
+      - type: reading
+        title: "Section 040 Knowledge Check: kyverno jp"
+        path: sections/section-040/quiz.md
+
+      - type: reading
+        title: Question
+        path: sections/section-040/capstone/labs/lab-01/question.md
+
+      - type: reading
+        title: Solution Walkthrough
+        path: sections/section-040/capstone/labs/lab-01/solution.md
+
+      - type: lab
+        title: "kyverno jp Capstone Lab"
+        path: sections/section-040/capstone/labs/lab-01
+
+  - id: module-050
+    title: "KCA Kyverno CLI Certification Quiz"
+    description: >
+      A comprehensive, scenario-based final assessment covering all 4
+      modules across the 4 Kyverno CLI sections, simulating exam-style
+      pressure.
+
+    content:
+      - type: reading
+        title: "Final Domain Certification Quiz"
+        path: sections/final-domain-quiz.md
