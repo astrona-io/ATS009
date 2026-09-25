@@ -1,0 +1,27 @@
+metadata:
+  name: "ats-009-lab-006"
+  docs:
+    solution: "solution.md"
+    question: "question.md"
+
+bootstrap:
+  init:
+    - name: "install-kyverno"
+      description: "Installs Kyverno onto the kind cluster"
+      type: "file"
+      source: "bootstrap/01-install-kyverno.sh"
+    - name: "install-kyverno-cli"
+      description: "Installs the kyverno CLI binary"
+      type: "file"
+      source: "bootstrap/02-install-kyverno-cli.sh"
+    - name: "seed-fixtures"
+      description: "Writes two policies and four resources to ~/kyverno-cli-lab; no test manifest is provided"
+      type: "file"
+      source: "bootstrap/03-seed-fixtures.sh"
+
+validation:
+  scripts:
+    - name: "verify-capstone-test-suite"
+      description: "Confirms kyverno-test.yaml covers both policies and all four resources with truthful results"
+      type: "file"
+      source: "validation/validate-completed.sh"

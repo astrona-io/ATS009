@@ -1,0 +1,27 @@
+metadata:
+  name: "ats-009-lab-004"
+  docs:
+    solution: "solution.md"
+    question: "question.md"
+
+bootstrap:
+  init:
+    - name: "install-kyverno"
+      description: "Installs Kyverno onto the kind cluster"
+      type: "file"
+      source: "bootstrap/01-install-kyverno.sh"
+    - name: "install-kyverno-cli"
+      description: "Installs the standalone kyverno CLI binary"
+      type: "file"
+      source: "bootstrap/02-install-kyverno-cli.sh"
+    - name: "setup-capstone"
+      description: "Creates the apps/platform namespaces, a real registry-config ConfigMap, and local policy/resource/values fixtures"
+      type: "file"
+      source: "bootstrap/03-setup-capstone.sh"
+
+validation:
+  scripts:
+    - name: "verify-section-020-capstone"
+      description: "Confirms the offline apply results with a mocked context, live enforcement, and the cluster policy report"
+      type: "file"
+      source: "validation/validate-completed.sh"

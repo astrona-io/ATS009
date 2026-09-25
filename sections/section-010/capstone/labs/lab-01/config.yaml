@@ -1,0 +1,19 @@
+metadata:
+  name: "ats-009-lab-002"
+  docs:
+    solution: "solution.md"
+    question: "question.md"
+
+bootstrap:
+  init:
+    - name: "install-kyverno"
+      description: "Installs the Kyverno controller onto the kind cluster (the kyverno CLI itself is not installed)"
+      type: "file"
+      source: "bootstrap/01-install-kyverno.sh"
+
+validation:
+  scripts:
+    - name: "verify-section-010-capstone"
+      description: "Confirms the installed kyverno binary is bit-identical to the official v1.13.2 release artifact and that bash completion is enabled"
+      type: "file"
+      source: "validation/validate-completed.sh"
