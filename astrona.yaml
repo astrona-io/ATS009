@@ -50,6 +50,7 @@ modules:
       - type: lab
         title: "Kyverno CLI Installation Lab"
         path: sections/section-010/module-01/labs/lab-01
+        difficulty: intermediate
 
       - type: reading
         title: "Section 010 Knowledge Check: Installing Kyverno CLI"
@@ -66,6 +67,7 @@ modules:
       - type: lab
         title: "Kyverno CLI Installation Capstone Lab"
         path: sections/section-010/capstone/labs/lab-01
+        difficulty: advanced
 
   - id: module-020
     title: "Section 020: kyverno apply"
@@ -102,6 +104,7 @@ modules:
       - type: lab
         title: "Offline & Cluster Policy Apply Lab"
         path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
 
       - type: reading
         title: "Section 020 Knowledge Check: kyverno apply"
@@ -118,6 +121,7 @@ modules:
       - type: lab
         title: "kyverno apply Capstone Lab"
         path: sections/section-020/capstone/labs/lab-01
+        difficulty: advanced
 
   - id: module-030
     title: "Section 030: kyverno test"
@@ -155,6 +159,7 @@ modules:
       - type: lab
         title: "Kyverno Test Suite Lab"
         path: sections/section-030/module-01/labs/lab-01
+        difficulty: intermediate
 
       - type: reading
         title: "Section 030 Knowledge Check: kyverno test"
@@ -171,6 +176,7 @@ modules:
       - type: lab
         title: "kyverno test Capstone Lab"
         path: sections/section-030/capstone/labs/lab-01
+        difficulty: advanced
 
   - id: module-040
     title: "Section 040: kyverno jp"
@@ -208,6 +214,7 @@ modules:
       - type: lab
         title: "kyverno jp Query Lab"
         path: sections/section-040/module-01/labs/lab-01
+        difficulty: intermediate
 
       - type: reading
         title: "Section 040 Knowledge Check: kyverno jp"
@@ -224,6 +231,7 @@ modules:
       - type: lab
         title: "kyverno jp Capstone Lab"
         path: sections/section-040/capstone/labs/lab-01
+        difficulty: advanced
 
   - id: module-050
     title: "KCA Kyverno CLI Certification Quiz"
