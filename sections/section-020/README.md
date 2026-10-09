@@ -1,46 +1,51 @@
 # Section 020: kyverno apply
 
-`kyverno apply` is the command that lets you prove a policy correct before it can ever reject a real request. In this section, you move from writing YAML in an editor to actually running it — first entirely offline against local resource files, with no cluster in the loop at all, then against real objects already living in a cluster, using the exact same command with one extra flag.
+`kyverno apply` lets you prove a policy correct before it can turn a real ship away. Inside a cluster, Kyverno is the docking inspector that checks every new spaceship (Pod) before it may dock. With `kyverno apply` you run the same check yourself: first fully offline, against blueprints on paper (local resource files), then against ships already docked in a live cluster, with the same command and one extra flag.
 
-This is the single most-used Kyverno CLI command in day-to-day policy authoring, and the one the exam expects you to be fastest with.
+It is the Kyverno command-line interface (CLI) command you will use most when you write policies, and the one the exam expects you to be fastest with.
+
+**Curriculum item covered:** apply
 
 ---
 
 ## What You Will Master
 
-By completing this section, you will acquire two core competencies:
-*   **Offline Policy Apply:** Running `kyverno apply` against local resource files with no cluster required, supplying variables through a values file, and reading the CLI's pass/fail summary output.
-*   **Cluster-Mode Apply & Policy Reports:** Using `--cluster` to evaluate a candidate policy against resources that already exist in a live cluster, scoping with `--namespace`, and generating a `--policy-report`.
+- Running `kyverno apply` against local resource files with no cluster, and reading its pass, fail, warn, error and skip summary.
+- Using the exit code of `kyverno apply` as a gate in a script or a CI pipeline.
+- Supplying the value of a `context` lookup with a values file (`-f`) or `--set` when there is no cluster to ask.
+- Using `--cluster` to check a new policy against resources that already exist in a live cluster, limited with `--namespace`.
+- Generating a `ClusterPolicyReport` with `--policy-report`.
 
 ---
 
-## The Learning & Lab Path
+## The Learning Path
 
-This section has one module, paired with a dedicated graded lab on a kind Kubernetes cluster, and concludes with a Capstone Integration Challenge:
+This section has one module with a graded mission, a knowledge check, and a capstone that joins it all together. Work through them in this order.
 
 ### 1. Applying Policies with the Kyverno CLI
 *   **Module Reader:** **[Module 1: Applying Policies with the Kyverno CLI](./module-01/course.md)**
+    Parts, in reading order:
     1. [Offline Policy Apply](./module-01/course-01-offline-policy-apply.md)
-    2. [Applying Against a Live Cluster & Policy Reports](./module-01/course-02-applying-against-a-live-cluster-and-policy-reports.md)
-*   **Practice Lab Sandbox:** **`sections/section-020/module-01/labs/lab-01`**
-*   **Lab Run Command:**
+    2. [Supplying Variables With A Values File](./module-01/course-02-supplying-variables-with-a-values-file.md)
+    3. [Applying Against a Live Cluster & Policy Reports](./module-01/course-03-applying-against-a-live-cluster-and-policy-reports.md)
+    4. [Wrap-Up: Mission Debrief](./module-01/course-04-wrap-up.md)
+*   **Graded lab:** **[Offline & Cluster Policy Apply Lab](./module-01/labs/lab-01/README.md)**: a `kind` cluster with Kyverno and the CLI `1.13.2`, two Pods in the namespace `apps` and the policy files in `/root/apply-lab/`. Read the [task](./module-01/labs/lab-01/question.md), solve it, then
     ```bash
-    astrona run --git git@github.com:astrona-io/ATS009.git -c sections/section-020/module-01/labs/lab-01
+    astrona run --git ssh://git@github.com/astrona-io/ATS009.git -c sections/section-020/module-01/labs/lab-01
+    astrona submit -c sections/section-020/module-01/labs/lab-01
     ```
-*   **Hands-on Objective:** Run `kyverno apply` offline against a policy and a pair of local resource files, then run the same policy with `--cluster --policy-report` against pre-existing objects in a live namespace.
 
 ### 2. Section Capstone Challenge
-*   **Comprehensive Challenge:** **`sections/section-020/capstone/labs/lab-01` (kyverno apply Integration)**
-*   **Lab Run Command:**
+*   **Capstone:** **[kyverno apply Capstone Lab](./capstone/labs/lab-01/README.md)**: check a `ConfigMap`-backed policy offline with a values file, switch it on, and audit the namespace with a policy report. Read the [task](./capstone/labs/lab-01/question.md), solve it, then
     ```bash
-    astrona run --git git@github.com:astrona-io/ATS009.git -c sections/section-020/capstone/labs/lab-01
+    astrona run --git ssh://git@github.com/astrona-io/ATS009.git -c sections/section-020/capstone/labs/lab-01
+    astrona submit -c sections/section-020/capstone/labs/lab-01
     ```
-*   **Hands-on Objective:** Combine a values file supplying policy variables with an offline apply run, then a scoped `--cluster` audit against a live namespace with a policy report.
 
 ---
 
 ## Ready for Assessment?
 
-Test your theoretical knowledge and diagnostic reasoning before tackling the practical lab missions:
+Test your knowledge and your reasoning before you start the capstone:
 
 *   **[Take the Section 020 Knowledge Check Quiz](./quiz.md)**

@@ -1,78 +1,162 @@
-# Part 1 — Offline Policy Apply
+# Offline Policy Apply
 
-> Prerequisite: [Landing page](./course.md). Next: [Part 2 — Applying Against a Live Cluster & Policy Reports](./course-02-applying-against-a-live-cluster-and-policy-reports.md).
+Astronaut, the most important fact about `kyverno apply` is this: in its default mode, **it does not touch a cluster.** You give it a policy file and one or more resource files. The CLI checks the policy's rules against those resources inside its own process, the same way the admission controller's rule engine would. Think of a dry run in the simulator: you inspect ship blueprints on paper, and no real ship docks.
 
-## Apply needs no cluster at all
+This part shows a real offline run, how to read its result, and why its exit code matters.
 
-The single most important fact about `kyverno apply` in its default mode: **it does not touch a cluster.** You give it a policy file and one or more resource files, and it evaluates the policy's rules against those resources entirely in-process, the same way the admission controller's rule engine would, but with nothing to install, nothing to wait on, and nothing that can accidentally affect production.
+## Run your first offline check
 
-```sh
-kyverno apply policy.yaml --resource=resource1.yaml --resource=resource2.yaml
+The best way to learn the command is to run it once. You need one policy and two resources: one that should pass and one that should fail.
+
+### Save the policy and two Pods
+
+Save this as `clusterpolicy-require-team-label.yaml`. It requires a non-empty `team` label on every Pod in the namespace `apps`:
+
+```yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-team-label
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: check-team-label
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+            namespaces:
+              - apps
+      validate:
+        message: "A non-empty 'team' label is required on every Pod in apps."
+        pattern:
+          metadata:
+            labels:
+              team: "?*"
 ```
 
-`--resource` (short form `-r`) is repeatable — pass it once per file. You can also point it at a whole directory of resources, or apply against a folder of policies at once:
+The `pattern` is the template the ship's papers must fit. `"?*"` means "at least one character", so the label must exist and must not be empty.
 
-```sh
-kyverno apply policy.yaml --resource=./resources/
-kyverno apply ./policies/ --resource=./resources/
+Save this as `pod-compliant-app.yaml`. It carries the label, like a marking painted on the hull:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: compliant-app
+  namespace: apps
+  labels:
+    team: checkout
+spec:
+  containers:
+    - name: app
+      image: nginx:alpine
 ```
 
-## Reading the summary
+Save this as `pod-legacy-app.yaml`. It has no `team` label:
 
-Every `apply` run ends with a one-line summary:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: legacy-app
+  namespace: apps
+spec:
+  containers:
+    - name: app
+      image: nginx:alpine
+```
+
+### Check both Pods against the policy
+
+Apply the policy to both files. `--resource` (short form `-r`) takes one file each time you use it:
+
+```sh
+kyverno apply clusterpolicy-require-team-label.yaml --resource pod-compliant-app.yaml --resource pod-legacy-app.yaml
+```
 
 ```text
+Applying 3 policy rule(s) to 2 resource(s)...
+policy require-team-label -> resource apps/Pod/legacy-app failed:
+1 - check-team-label validation error: A non-empty 'team' label is required on every Pod in apps. rule check-team-label failed at path /metadata/labels/
+
+
 pass: 1, fail: 1, warn: 0, error: 0, skip: 0
 ```
 
-| Category | Meaning |
+The Kyverno CLI did the whole check itself, with no cluster. It names the Pod that failed, the rule, the message and the path in the YAML where the template did not fit. The passing Pod, `compliant-app`, is counted in the summary line but not listed.
+
+The policy has one rule, but the CLI says "3 policy rule(s)". Kyverno automatically writes extra copies of a Pod rule for the shipyards that build Pods, such as Deployments and CronJobs. These are called autogen rules. They do not match a bare Pod, so they add nothing to this result.
+
+### See every result in a table
+
+Add `--table` (short form `-t`) to list every resource and its result, passing ones included:
+
+```sh
+kyverno apply clusterpolicy-require-team-label.yaml --resource pod-compliant-app.yaml --resource pod-legacy-app.yaml --table
+```
+
+```text
+Applying 3 policy rule(s) to 2 resource(s)...
+│────│────────────────────│──────────────────│────────────────────────│────────│────────│
+│ ID │ POLICY             │ RULE             │ RESOURCE               │ RESULT │ REASON │
+│────│────────────────────│──────────────────│────────────────────────│────────│────────│
+│ 1  │ require-team-label │ check-team-label │ apps/Pod/compliant-app │ Pass   │        │
+│ 2  │ require-team-label │ check-team-label │ apps/Pod/legacy-app    │ Fail   │        │
+│────│────────────────────│──────────────────│────────────────────────│────────│────────│
+```
+
+The table shows both Pods. The table form does not print the summary line, so pick the form you need.
+
+## Point it at more files at once
+
+One file at a time gets slow with many resources. `--resource` also accepts a whole folder, and the policy argument can be a folder of policies too:
+
+```sh
+kyverno apply clusterpolicy-require-team-label.yaml --resource=./resources/
+kyverno apply ./policies/ --resource=./resources/
+```
+
+The CLI then checks every policy in the first folder against every resource in the second.
+
+## Read the summary line
+
+Every default `apply` run ends with one summary line. Each number counts one kind of result:
+
+| Result | What it means |
 | --- | --- |
-| `pass` | The resource satisfied the rule. |
-| `fail` | The resource violated the rule (would be rejected under `Enforce`). |
-| `warn` | The rule matched but is configured to warn rather than fail (see `--audit-warn`). |
-| `error` | Kyverno couldn't evaluate the rule at all — a malformed policy, a missing variable, etc. — distinct from a legitimate `fail`. |
-| `skip` | The rule didn't apply to this resource (its `match`/`exclude` block excluded it). |
+| `pass` | The resource fits the rule: cleared. |
+| `fail` | The resource breaks the rule. Under `Enforce`, the live inspector would turn it away. |
+| `warn` | The rule matched, but it is set to warn instead of fail (see the `--audit-warn` flag). Cleared with a warning note. |
+| `error` | Kyverno could not finish checking the rule at all, for example because of a broken policy or a missing variable. This is not the same as a real `fail`. |
+| `skip` | The rule does not apply to this resource, because its `match` or `exclude` block leaves it out. |
 
-> [!WARNING]
-> **Common pitfall**
->
-> A non-zero `fail` or `error` count means `kyverno apply` exits with a non-zero exit code. This is exactly what makes `apply` usable as a CI gate — but it also means a script that runs `kyverno apply ...` and ignores its exit status will silently swallow real policy violations. Always check `$?` (or let your CI runner do it for you by not swallowing the command's exit code).
+## Use the exit code
 
-## Supplying variables with a values file
+When a command ends, it leaves an exit code: the green or red light on the console. `0` is green. Anything else is red.
 
-A Kyverno rule can't reference just any `{{ freeform }}` name — policy validation only accepts variables that come from a recognized source: `request.*` (the incoming object/user info), `element`/`elementIndex` (inside a `foreach`), `images.*`/`image.*`, or a name the rule itself declares in a `context` entry (a `configMap` lookup, an `apiCall`, or a computed `variable`). `request.object.*` variables are answered directly by whichever resource file you pass with `--resource` — no values file needed, since that *is* the object being evaluated.
+### Check the light
 
-Where a values file earns its keep is a `context` entry that reaches outside the resource itself — a `configMap` or `apiCall` lookup — which simply isn't reachable when there's no cluster. The `-f`/`--values-file` flag points at a YAML file that pre-seeds a value for that context variable, so `apply` uses your mock instead of trying (and failing) to reach the external source:
-
-```yaml
-policies:
-  - name: require-approved-registry
-    resources:
-      - name: web-pod
-        values:
-          approvedRegistry: registry.internal/
-```
+Run the same check again, then print the exit code of the last command:
 
 ```sh
-kyverno apply policy.yaml --resource=resource.yaml -f values.yaml
+kyverno apply clusterpolicy-require-team-label.yaml --resource pod-compliant-app.yaml --resource pod-legacy-app.yaml
+echo $?
 ```
 
-For a single quick value without writing a whole values file, `--set` works inline:
+The summary is the same as before, and `echo $?` prints `1`. Any `fail` or `error` makes `kyverno apply` end with a non-zero exit code.
 
-```sh
-kyverno apply policy.yaml --resource=resource.yaml --set approvedRegistry=registry.internal/
-```
+That is what makes `apply` useful as a gate in a CI pipeline (continuous integration, the launch checklist every change must clear). The pipeline sees the red light and stops the change.
+
+> [!TIP]
+> A script that runs `kyverno apply` and then carries on with the next command hides every failure. Let the command's exit code decide: run it as its own pipeline step, or join commands with `&&` so a red light stops the chain.
+
+## Common pitfalls
 
 > [!WARNING]
-> **Common pitfall**
->
-> `-f`/`--set` only pre-seeds a value for a variable the rule already declares via `context` (or a `request.*`/`images.*` name) — it can't invent a brand-new free-floating variable name. A rule that references `{{ someName }}` without a matching `context` entry fails policy validation outright, before any resource is even evaluated, with an error naming `someName` as not matching Kyverno's allowed variable patterns.
->
-> Also note: if the `context` entry itself computes a static value (a `variable` context type, rather than an external `configMap`/`apiCall` lookup), that computed value takes precedence over anything supplied via `-f`/`--set` — the mock only "wins" for context types that would otherwise need real external data.
-
-If a policy references a variable this way and you run `apply` without supplying a mock, expect an `error` result (not a `fail`) — Kyverno couldn't finish evaluating the rule at all, which is a different, more diagnostic-worthy failure mode than a legitimate policy violation.
-
-## Reference
-
-- `kyverno apply --help` — the authoritative, version-matched flag list.
-- [`kyverno apply` reference](https://kyverno.io/docs/kyverno-cli/reference/kyverno_apply/) — official documentation with the complete flag table.
+> - **Ignoring the exit code.** `kyverno apply` exits non-zero on any `fail` or `error`. A script that does not check `$?` silently lets real violations through.
+> - **Looking for the passing resource in the default output.** Without `--table`, only failing resources are listed. Passing ones show up only as a number in the summary line.
+> - **Reading `error` as `fail`.** `error` means the CLI could not finish the check. Fix the policy or supply the missing value; do not "fix" the resource.
+> - **Expecting the cluster to change.** Offline `apply` never creates, changes or rejects anything in a cluster. It only reports.

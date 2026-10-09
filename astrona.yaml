@@ -119,14 +119,17 @@ modules:
         path: sections/section-020/README.md
 
       - type: reading
-        title: "Module 1: Applying Policies with the Kyverno CLI"
+        title: "Applying Policies with the Kyverno CLI"
         path: sections/section-020/module-01/course.md
       - type: reading
-        title: "Module 1.1: Offline Policy Apply"
+        title: "Offline Policy Apply"
         path: sections/section-020/module-01/course-01-offline-policy-apply.md
       - type: reading
-        title: "Module 1.2: Applying Against a Live Cluster & Policy Reports"
-        path: sections/section-020/module-01/course-02-applying-against-a-live-cluster-and-policy-reports.md
+        title: "Supplying Variables With A Values File"
+        path: sections/section-020/module-01/course-02-supplying-variables-with-a-values-file.md
+      - type: reading
+        title: "Applying Against a Live Cluster & Policy Reports"
+        path: sections/section-020/module-01/course-03-applying-against-a-live-cluster-and-policy-reports.md
       - type: reading
         title: Question
         path: sections/section-020/module-01/labs/lab-01/question.md
@@ -149,6 +152,10 @@ modules:
             url: https://kyverno.io/docs/subprojects/kyverno-cli/
           - name: "Policy reports"
             url: https://kyverno.io/docs/guides/reports/
+
+      - type: reading
+        title: "Wrap-Up: Mission Debrief"
+        path: sections/section-020/module-01/course-04-wrap-up.md
 
       - type: reading
         title: "Section 020 Knowledge Check: kyverno apply"

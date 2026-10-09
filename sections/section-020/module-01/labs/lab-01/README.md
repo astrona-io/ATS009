@@ -1,9 +1,27 @@
+---
+estimated_duration: 25m
+---
+
 # Offline & Cluster Policy Apply Lab
 
-Welcome to the Module 1 targeted practice sandbox. In this lab, you will run `kyverno apply` offline against local policy and resource files, apply the same policy to a live cluster, generate a `PolicyReport` with `--cluster --policy-report`, and confirm real admission-time enforcement.
+Welcome to your mission, astronaut. A rule that requires a `team` label is waiting on disk, and two ships are already docked on the planet `apps`: one with the label and one without. Your job is to test the rule on paper with `kyverno apply`, switch it on in the live cluster, audit the planet with a policy report, and watch the docking inspector turn away a new ship that breaks the rule.
 
 ## Launching the Lab
-Run the following command in your terminal to boot the kind Kubernetes cluster:
+
+Run this command to start the cluster:
+
 ```bash
-astrona run --git git@github.com:astrona-io/ATS009.git -c sections/section-020/module-01/labs/lab-01
+astrona run --git ssh://git@github.com/astrona-io/ATS009.git -c sections/section-020/module-01/labs/lab-01
+```
+
+When you think you have finished, send it for grading:
+
+```bash
+astrona submit -c sections/section-020/module-01/labs/lab-01
+```
+
+When you are done, remove the lab:
+
+```bash
+astrona destroy ats-009-lab-003
 ```

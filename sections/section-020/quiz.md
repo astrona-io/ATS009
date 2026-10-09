@@ -22,7 +22,7 @@ You want to check whether a new policy would pass against a resource manifest yo
 *   **Why others are incorrect:**
     *   *Option A* requires a live API server to dry-run against, which the question rules out.
     *   *Option C* requires `--cluster`, which needs a working `kubeconfig` pointed at a real cluster.
-    *   *Option D* names the wrong subcommand — `kyverno test` runs a `kyverno-test.yaml` test suite with declared expected results, not an ad-hoc apply against arbitrary files (covered in Section 030).
+    *   *Option D* names the wrong subcommand — `kyverno test` runs a `kyverno-test.yaml` test suite with declared expected results, not an ad-hoc apply against arbitrary files.
 </details>
 
 ---
@@ -39,7 +39,7 @@ You run `kyverno apply policy.yaml --resource pod.yaml` and the summary line rea
 
 **Correct Answer: C**
 
-*   **Why C is correct:** `error` means the engine couldn't complete evaluation — most commonly because a variable the policy references (e.g. from `context` or a template expression) was never supplied via `-f`/`--values-file` or `--set` when running offline. It is deliberately counted separately from `fail`, because it means "I don't know the answer," not "the answer is no."
+*   **Why C is correct:** `error` means the engine couldn't complete evaluation — most commonly because a variable the policy references (for example from `context` or a template expression) was never supplied via `-f`/`--values-file` or `--set` when running offline. It is deliberately counted separately from `fail`, because it means "I don't know the answer," not "the answer is no."
 *   **Why others are incorrect:**
     *   *Option A* describes `fail`, not `error`.
     *   *Option B* describes `skip`.
@@ -123,7 +123,7 @@ A CI pipeline runs `kyverno apply policy.yaml --resource ./manifests/ ; echo "st
 
 **Correct Answer: B**
 
-*   **Why B is correct:** `kyverno apply` does exit non-zero when any resource fails or errors — that's what makes it usable as a CI gate. But `cmd1 ; cmd2` always runs `cmd2` regardless of `cmd1`'s exit status, and if nothing downstream inspects `$?`, the pipeline step's own final exit code reflects `echo`, not `kyverno apply`. The fix is to let the failing command's exit code propagate (e.g. run it as its own step, or use `&&` and check `$?` explicitly).
+*   **Why B is correct:** `kyverno apply` does exit non-zero when any resource fails or errors — that's what makes it usable as a CI gate. But `cmd1 ; cmd2` always runs `cmd2` regardless of `cmd1`'s exit status, and if nothing downstream inspects `$?`, the pipeline step's own final exit code reflects `echo`, not `kyverno apply`. The fix is to let the failing command's exit code propagate (for example run it as its own step, or use `&&` and check `$?` explicitly).
 *   **Why others are incorrect:**
     *   *Option A* is factually wrong — a `fail`/`error` result does produce a non-zero exit code by default.
     *   *Option C* — pointing `--resource` at a directory is fully supported and doesn't change exit-code behavior.
