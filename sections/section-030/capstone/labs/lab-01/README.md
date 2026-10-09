@@ -1,9 +1,27 @@
-# kyverno test Capstone Challenge
+---
+estimated_duration: 35m
+---
 
-Welcome to the Section 030 Capstone. In this lab, you will author a complete `kyverno-test.yaml` from scratch, covering two policies, three rules, and four resources, using resource grouping to keep the manifest as small as the real outcomes allow.
+# kyverno test Capstone Lab
+
+Welcome to the section capstone, astronaut. Two policies, three rules and four ships are waiting in `~/kyverno-cli-lab`, and nobody has written the checklist yet. Your job is to work out every real verdict, then write a complete `kyverno-test.yaml` from scratch, grouping ships that share a verdict so the checklist stays as short as the truth allows.
 
 ## Launching the Lab
-Run the following command in your terminal to boot the kind Kubernetes cluster:
+
+Run this command to start the cluster:
+
 ```bash
-astrona run --git git@github.com:astrona-io/ATS009.git -c sections/section-030/capstone/labs/lab-01
+astrona run --git ssh://git@github.com/astrona-io/ATS009.git -c sections/section-030/capstone/labs/lab-01
+```
+
+When you think you have finished, send it for grading:
+
+```bash
+astrona submit -c sections/section-030/capstone/labs/lab-01
+```
+
+When you are done, remove the lab:
+
+```bash
+astrona destroy ats-009-lab-006
 ```

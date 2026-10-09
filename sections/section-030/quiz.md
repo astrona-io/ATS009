@@ -81,7 +81,7 @@ Your CI pipeline runs `kyverno test .` on every pull request. Over several month
 
 **Correct Answer: B**
 
-*   **Why B is correct:** With no `results` entries left, there is nothing for `kyverno test` to disagree with, so the run reports success — a false green. `--require-tests` exists specifically to fail a run that discovers zero test cases, turning "the suite was hollowed out" into a build failure instead of silent, permanent green.
+*   **Why B is correct:** With no `results` entries left, there is nothing for `kyverno test` to disagree with, so the run reports success — a false green. `--require-tests` exists specifically to fail a run that discovers zero test cases, turning "the suite was hollowed out" into a build failure instead of silent, permanent green. (The flag is in newer CLIs such as 1.19; the 1.13.2 CLI used in this course's labs does not have it.)
 *   **Why others are incorrect:**
     *   *Option A* is wrong — an empty `results` list is syntactically valid; the problem is what it fails to assert, not a parse error.
     *   *Option C* is wrong — `--require-tests` is exactly this flag.

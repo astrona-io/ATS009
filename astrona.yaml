@@ -198,13 +198,13 @@ modules:
         path: sections/section-030/README.md
 
       - type: reading
-        title: "Module 1: Writing & Running Kyverno Test Suites"
+        title: "Writing & Running Kyverno Test Suites"
         path: sections/section-030/module-01/course.md
       - type: reading
-        title: "Module 1.1: Test Manifest Anatomy"
+        title: "Test Manifest Anatomy"
         path: sections/section-030/module-01/course-01-test-manifest-anatomy.md
       - type: reading
-        title: "Module 1.2: Running & Interpreting Test Results"
+        title: "Running & Interpreting Test Results"
         path: sections/section-030/module-01/course-02-running-and-interpreting-test-results.md
       - type: reading
         title: Question
@@ -225,6 +225,10 @@ modules:
             url: https://kyverno.io/docs/guides/testing-policies/
           - name: "kyverno test reference"
             url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_test/
+
+      - type: reading
+        title: "Wrap-Up: Mission Debrief"
+        path: sections/section-030/module-01/course-03-wrap-up.md
 
       - type: reading
         title: "Section 030 Knowledge Check: kyverno test"

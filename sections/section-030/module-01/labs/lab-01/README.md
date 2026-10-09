@@ -1,9 +1,27 @@
-# Kyverno Test Suite Sandbox
+---
+estimated_duration: 20m
+---
 
-Welcome to the Module 1 targeted practice sandbox. In this lab, you will diagnose a `kyverno-test.yaml` whose declared expectations don't match Kyverno's real evaluation, and fix it so the test suite truthfully reports pass and fail.
+# Kyverno Test Suite Lab
+
+Welcome to your mission, astronaut. A test manifest in `~/kyverno-cli-lab` claims that two Pods both pass a policy, but one of them really breaks it. Your job is to run the suite, read which claim is wrong, and fix the manifest so it tells the truth about each Pod, without deleting the case that is inconvenient.
 
 ## Launching the Lab
-Run the following command in your terminal to boot the kind Kubernetes cluster:
+
+Run this command to start the cluster:
+
 ```bash
-astrona run --git git@github.com:astrona-io/ATS009.git -c sections/section-030/module-01/labs/lab-01
+astrona run --git ssh://git@github.com/astrona-io/ATS009.git -c sections/section-030/module-01/labs/lab-01
+```
+
+When you think you have finished, send it for grading:
+
+```bash
+astrona submit -c sections/section-030/module-01/labs/lab-01
+```
+
+When you are done, remove the lab:
+
+```bash
+astrona destroy ats-009-lab-005
 ```
