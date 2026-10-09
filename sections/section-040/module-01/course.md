@@ -34,7 +34,7 @@ This module teaches JMESPath from the beginning. You only need to be able to rea
 
 ### What is waiting in your missions
 
-The graded missions start a training solar system (a `kind` cluster) with Kyverno and the `kyverno` CLI `1.13.2` installed, plus a JSON file to query and an empty `answers/` folder. Every command in the parts also runs on your own machine: `kyverno jp` never needs a cluster.
+The graded missions start a training solar system (a `kind` cluster) with Kyverno and the `kyverno` command-line interface (CLI) `1.13.2` installed, plus a JSON file to query and an empty `answers/` folder. Every command in the parts also runs on your own machine: `kyverno jp` never needs a cluster.
 
 ## How this module is organised
 

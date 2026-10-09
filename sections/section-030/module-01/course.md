@@ -1,6 +1,6 @@
 # Writing & Running Kyverno Test Suites
 
-Astronaut, `kyverno apply` proves that a policy does the right thing *today*, against the resources you hand it. It does not stop someone from editing that policy tomorrow and quietly breaking the case you already checked. `kyverno test` closes that gap. You write a test manifest: a pre-flight checklist with the expected verdict next to every line, such as "this rule must clear this ship and turn that one away". The Kyverno CLI runs the real checks, compares them with your checklist, and fails loudly the moment the two disagree.
+Astronaut, `kyverno apply` proves that a policy does the right thing *today*, against the resources you hand it. It does not stop someone from editing that policy tomorrow and quietly breaking the case you already checked. `kyverno test` closes that gap. You write a test manifest: a pre-flight checklist with the expected verdict next to every line, such as "this rule must clear this ship and turn that one away". The Kyverno command-line interface (CLI) runs the real checks, compares them with your checklist, and fails loudly the moment the two disagree. That makes it a natural step in a CI pipeline (continuous integration: the launch checklist every change must clear before it leaves the shipyard).
 
 This module teaches you to write that checklist and to read what it tells you.
 

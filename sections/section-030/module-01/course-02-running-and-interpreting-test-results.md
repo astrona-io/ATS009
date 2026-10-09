@@ -1,6 +1,6 @@
 # Running & Interpreting Test Results
 
-Astronaut, a checklist only helps if you run it and read it right. This part shows how to run `kyverno test`, what a failing run looks like, which flags change the run, and how the exit code turns a suite into a gate that every change must clear before it leaves the shipyard.
+Astronaut, a checklist only helps if you run it and read it right. This part shows how to run `kyverno test`, what a failing run looks like, which flags change the run, and how the exit code turns a suite into a gate in a CI pipeline (continuous integration: the launch checklist every change must clear before it leaves the shipyard).
 
 The commands below use a folder with four files: the `require-run-as-nonroot` policy (rule `check-runAsNonRoot`), a `good-pod` that sets `runAsNonRoot: true`, a `bad-pod` with no `securityContext`, and a `kyverno-test.yaml` that expects `pass` for `good-pod` and `fail` for `bad-pod`.
 

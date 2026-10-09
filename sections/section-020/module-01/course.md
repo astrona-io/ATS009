@@ -29,7 +29,7 @@ This module is about one command. You need the tool and a little Kubernetes, not
 
 ### What you should already know
 
-- **The Kyverno CLI is installed.** `kyverno version` must run on your machine. In the missions, the lab installs version `1.13.2` for you.
+- **The Kyverno command-line interface (CLI) is installed.** `kyverno version` must run on your machine. In the missions, the lab installs version `1.13.2` for you.
 - **Basic `kubectl`.** Applying a file, listing Pods, and what a namespace is.
 - **What a Kyverno policy looks like.** A `ClusterPolicy` is a page of the fleet rulebook for the whole solar system. Each rule on it has a `match` block (which ships it looks at) and a `validate` block (the template the ship's papers must fit).
 
