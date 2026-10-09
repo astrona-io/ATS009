@@ -1,25 +1,42 @@
+# Course manifest for ATS009 - Kyverno CLI (Kyverno Certified Associate).
+#
+# One entry per section under `modules:`. Each section lists, in order: its
+# README, then for each module the landing page (course.md), its parts
+# (course-0N-*.md), and right after the part a lab tests, the lab's
+# question.md reading and the `type: lab` entry. The module's wrap-up page
+# comes last. The section quiz follows, and the section capstone closes the
+# section. solution.md files are never listed. This course has no
+# playgrounds.
+#
+# Every `path:` is relative to this file.
+
 training:
   id: ATS009
   title: "KCA: Kyverno CLI"
   description: >
-    Training material covering the Kyverno CLI domain for the Kyverno
-    Certified Associate (KCA) learning path, with hands-on labs for each
-    competency running on a kind Kubernetes cluster.
+    Training material covering the Kyverno CLI domain of the Kyverno
+    Certified Associate (KCA) exam: installing the kyverno binary, testing
+    policies offline and against a live cluster with kyverno apply, writing
+    test suites with kyverno test, and debugging JMESPath expressions with
+    kyverno jp. Each module pairs a layered reader with a graded practice
+    lab on a kind cluster, and each section closes with an integration
+    capstone. Built against Kyverno and the Kyverno CLI v1.13.2.
 
   certification:
     name: Kyverno Certified Associate
     code: KCA
-    provider: Kyverno Project (CNCF Sandbox)
+    provider: Kyverno Project (CNCF)
     domain: Kyverno CLI
-    weight: 100
+    weight: 12
 
 modules:
+
   - id: module-010
     title: "Section 010: Installing Kyverno CLI"
     description: >
       Get the kyverno binary onto your machine and verify it actually
-      works: the release binary, Homebrew, the install script, and the
-      krew plugin, plus reading kyverno version output and navigating the
+      works: the release tarball, Homebrew, the Krew plugin and building
+      from source, plus reading kyverno version output and navigating the
       CLI's subcommand tree.
 
     content:
@@ -30,26 +47,33 @@ modules:
       - type: reading
         title: "Module 1: Installing & Verifying the Kyverno CLI"
         path: sections/section-010/module-01/course.md
-
       - type: reading
         title: "Module 1.1: Installation Methods"
         path: sections/section-010/module-01/course-01-installation-methods.md
-
       - type: reading
         title: "Module 1.2: Verifying Installation & CLI Structure"
         path: sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
-
       - type: reading
         title: Question
         path: sections/section-010/module-01/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-010/module-01/labs/lab-01/solution.md
-
       - type: lab
         title: "Kyverno CLI Installation Lab"
         path: sections/section-010/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 15m
+        topic: installation
+        task_kind: build
+        tags: [release-tarball, path, kyverno-version, version-pinning]
+        learning_goals:
+          - Install a pinned Kyverno CLI release from its GitHub tarball
+          - Prove with kyverno version which binary the shell runs
+        resources:
+          - name: "Kyverno CLI"
+            url: https://kyverno.io/docs/subprojects/kyverno-cli/
+          - name: "kyverno version reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_version/
+          - name: "Kyverno releases"
+            url: https://github.com/kyverno/kyverno/releases
 
       - type: reading
         title: "Section 010 Knowledge Check: Installing Kyverno CLI"
@@ -58,14 +82,25 @@ modules:
       - type: reading
         title: Question
         path: sections/section-010/capstone/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-010/capstone/labs/lab-01/solution.md
-
       - type: lab
         title: "Kyverno CLI Installation Capstone Lab"
         path: sections/section-010/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: installation
+        task_kind: build
+        tags: [release-tarball, version-pinning, checksum, kyverno-version, shell-completion, path]
+        learning_goals:
+          - Install the v1.13.2 CLI so it is byte for byte the official release binary
+          - Check a release tarball against the published checksums file
+          - Generate a bash completion script for the kyverno command
+        resources:
+          - name: "Kyverno CLI"
+            url: https://kyverno.io/docs/subprojects/kyverno-cli/
+          - name: "kyverno completion reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_completion/
+          - name: "Kyverno releases"
+            url: https://github.com/kyverno/kyverno/releases
 
   - id: module-020
     title: "Section 020: kyverno apply"
@@ -82,26 +117,34 @@ modules:
       - type: reading
         title: "Module 1: Applying Policies with the Kyverno CLI"
         path: sections/section-020/module-01/course.md
-
       - type: reading
         title: "Module 1.1: Offline Policy Apply"
         path: sections/section-020/module-01/course-01-offline-policy-apply.md
-
       - type: reading
         title: "Module 1.2: Applying Against a Live Cluster & Policy Reports"
         path: sections/section-020/module-01/course-02-applying-against-a-live-cluster-and-policy-reports.md
-
       - type: reading
         title: Question
         path: sections/section-020/module-01/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-020/module-01/labs/lab-01/solution.md
-
       - type: lab
         title: "Offline & Cluster Policy Apply Lab"
         path: sections/section-020/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 25m
+        topic: apply
+        task_kind: build
+        tags: [kyverno-apply, offline-apply, cluster-apply, policy-report, namespace-scope, enforce, admission]
+        learning_goals:
+          - Run kyverno apply offline against two resource files and save the result
+          - Generate a ClusterPolicyReport from live Pods with --cluster and --policy-report
+          - Show that an Enforce policy blocks a new Pod but leaves an older Pod running
+        resources:
+          - name: "kyverno apply reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_apply/
+          - name: "Kyverno CLI"
+            url: https://kyverno.io/docs/subprojects/kyverno-cli/
+          - name: "Policy reports"
+            url: https://kyverno.io/docs/guides/reports/
 
       - type: reading
         title: "Section 020 Knowledge Check: kyverno apply"
@@ -110,14 +153,25 @@ modules:
       - type: reading
         title: Question
         path: sections/section-020/capstone/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-020/capstone/labs/lab-01/solution.md
-
       - type: lab
         title: "kyverno apply Capstone Lab"
         path: sections/section-020/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 35m
+        topic: apply
+        task_kind: build
+        tags: [kyverno-apply, values-file, context-variables, configmap-context, cluster-apply, policy-report, enforce]
+        learning_goals:
+          - Mock a ConfigMap context lookup with a values file for an offline apply
+          - Prove the live policy reads the real ConfigMap and blocks an untrusted image
+          - Audit a namespace with kyverno apply --cluster and a policy report
+        resources:
+          - name: "kyverno apply reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_apply/
+          - name: "External data sources"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/external-data-sources/
+          - name: "Variables"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/variables/
 
   - id: module-030
     title: "Section 030: kyverno test"
@@ -135,26 +189,31 @@ modules:
       - type: reading
         title: "Module 1: Writing & Running Kyverno Test Suites"
         path: sections/section-030/module-01/course.md
-
       - type: reading
         title: "Module 1.1: Test Manifest Anatomy"
         path: sections/section-030/module-01/course-01-test-manifest-anatomy.md
-
       - type: reading
         title: "Module 1.2: Running & Interpreting Test Results"
         path: sections/section-030/module-01/course-02-running-and-interpreting-test-results.md
-
       - type: reading
         title: Question
         path: sections/section-030/module-01/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-030/module-01/labs/lab-01/solution.md
-
       - type: lab
         title: "Kyverno Test Suite Lab"
         path: sections/section-030/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 20m
+        topic: testing
+        task_kind: troubleshooting
+        tags: [kyverno-test, test-manifest, test-results, resource-grouping, require-tests, ci-gate]
+        learning_goals:
+          - Read kyverno test output to find which expected result is wrong
+          - Fix a test manifest so each resource asserts its real result
+        resources:
+          - name: "Testing policies"
+            url: https://kyverno.io/docs/guides/testing-policies/
+          - name: "kyverno test reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_test/
 
       - type: reading
         title: "Section 030 Knowledge Check: kyverno test"
@@ -163,14 +222,24 @@ modules:
       - type: reading
         title: Question
         path: sections/section-030/capstone/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-030/capstone/labs/lab-01/solution.md
-
       - type: lab
         title: "kyverno test Capstone Lab"
         path: sections/section-030/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 35m
+        topic: testing
+        task_kind: build
+        tags: [kyverno-test, test-manifest, test-results, resource-grouping, validate-rule, pattern, require-tests]
+        learning_goals:
+          - Work out the real result of three rules for four Pods
+          - Write a kyverno-test.yaml from scratch that groups resources with the same result
+        resources:
+          - name: "Testing policies"
+            url: https://kyverno.io/docs/guides/testing-policies/
+          - name: "kyverno test reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_test/
+          - name: "Validate rules"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/validate/
 
   - id: module-040
     title: "Section 040: kyverno jp"
@@ -188,26 +257,36 @@ modules:
       - type: reading
         title: "Module 1: JMESPath with the Kyverno CLI"
         path: sections/section-040/module-01/course.md
-
       - type: reading
         title: "Module 1.1: JMESPath Fundamentals via kyverno jp query"
         path: sections/section-040/module-01/course-01-jmespath-fundamentals-via-kyverno-jp-query.md
-
       - type: reading
         title: "Module 1.2: Kyverno's Custom JMESPath Functions"
         path: sections/section-040/module-01/course-02-kyvernos-custom-jmespath-functions.md
-
       - type: reading
         title: Question
         path: sections/section-040/module-01/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-040/module-01/labs/lab-01/solution.md
-
       - type: lab
         title: "kyverno jp Query Lab"
         path: sections/section-040/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 20m
+        topic: jmespath
+        task_kind: build
+        tags: [kyverno-jp, jp-query, jp-function, jmespath-syntax, string-functions, pattern-match, literals]
+        learning_goals:
+          - Extract single values from a Pod document with kyverno jp query
+          - Clean and convert strings with Kyverno's trim and to_lower functions
+          - Check an image against a glob pattern with pattern_match
+        resources:
+          - name: "kyverno jp query reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_query/
+          - name: "kyverno jp function reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_function/
+          - name: "JMESPath in Kyverno"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/jmespath/
+          - name: "JMESPath specification"
+            url: https://jmespath.org/specification.html
 
       - type: reading
         title: "Section 040 Knowledge Check: kyverno jp"
@@ -216,14 +295,25 @@ modules:
       - type: reading
         title: Question
         path: sections/section-040/capstone/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-040/capstone/labs/lab-01/solution.md
-
       - type: lab
         title: "kyverno jp Capstone Lab"
         path: sections/section-040/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: jmespath
+        task_kind: build
+        tags: [kyverno-jp, jp-query, jp-function, semver-compare, label-match, regex-match, string-functions]
+        learning_goals:
+          - Cut a version tag out of an image reference with split
+          - Check a version, a label selector and an email shape with Kyverno functions
+          - Read a function's signature with kyverno jp function before using it
+        resources:
+          - name: "kyverno jp function reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_function/
+          - name: "JMESPath in Kyverno"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/jmespath/
+          - name: "kyverno jp query reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_query/
 
   - id: module-050
     title: "KCA Kyverno CLI Certification Quiz"

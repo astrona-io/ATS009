@@ -378,8 +378,8 @@ this order:
 - `topic`: exactly one of `installation`, `apply`, `testing`, `jmespath`.
 - `task_kind`: exactly one of `build` (do the task or write the file from
   scratch), `troubleshooting` (find and fix what is broken) or `migration`
-  (move a working setup to another form, for example a values file to a
-  live `ConfigMap`). The platform filters labs by it, so it is a field of its
+  (move a working setup to another form, for example a policy from `Audit`
+  to `Enforce`). The platform filters labs by it, so it is a field of its
   own, never a tag.
 - `tags`: 4 to 8 ids, only from the tag list below. Add a new tag to the list
   first if nothing fits.
