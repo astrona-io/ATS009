@@ -1,30 +1,30 @@
-# Part 1 — Installation Methods
+# Installation Methods
 
-> Prerequisite: [Landing page](./course.md). Next: [Part 2 — Verifying Installation & CLI Structure](./course-02-verifying-installation-and-cli-structure.md).
+Astronaut, before you can scan a single ship you need the scanner in your hand. The Kyverno project ships its command-line interface (CLI) through four common channels: a release tarball, Homebrew, Krew and a build from source. This part walks through each one and shows which command name it leaves on your machine.
 
-## Two different things, both called "the Kyverno CLI"
+## Two tools, both called "the Kyverno CLI"
 
-Before touching a terminal, it's worth knowing there are really two distinct artifacts the Kyverno project ships:
+Before you touch a terminal, know that the Kyverno project ships two different files. They do the same work, but you call them by different names.
 
-| Artifact | Binary name | Invoked as | Typical source |
+| What you get | File name on disk | You call it as | Usual source |
 | --- | --- | --- | --- |
 | Standalone CLI | `kyverno` | `kyverno <subcommand>` | GitHub release tarball, Homebrew, building from source |
-| `kubectl` plugin | `kubectl-kyverno` | `kubectl kyverno <subcommand>` | Krew, or building from source with the plugin naming convention |
+| `kubectl` plugin | `kubectl-kyverno` | `kubectl kyverno <subcommand>` | Krew, or building from source |
 
-Both wrap the exact same functionality — `apply`, `test`, `jp`, and the rest of the subcommand tree behave identically either way. The only difference is the name on disk and therefore how you type the command. `kubectl` recognizes any binary on your `PATH` named `kubectl-<name>` as a plugin invokable via `kubectl <name>`, which is exactly what makes `kubectl kyverno version` work once `kubectl-kyverno` is installed.
+Both forms run the exact same code. `apply`, `test`, `jp` and every other subcommand behave the same way in each. The only difference is the name of the file, and so the way you type the command.
+
+The plugin form works because of a `kubectl` rule. `kubectl` treats any program on your `PATH` named `kubectl-<name>` as a plugin, and runs it when you type `kubectl <name>`. Picture the same scanner, clipped onto your standard toolbelt. So once `kubectl-kyverno` is installed, `kubectl kyverno version` works.
 
 > [!TIP]
-> This training material uses the standalone `kyverno` form throughout. If you installed via Krew instead, mentally substitute `kubectl kyverno` everywhere you see a bare `kyverno` command — the subcommands and flags are identical.
+> This course uses the standalone `kyverno` form everywhere. If you installed with Krew instead, read `kubectl kyverno` wherever you see a bare `kyverno` command. The subcommands and flags are the same.
 
-## Method 1: GitHub release tarball
+## Method 1: the GitHub release tarball
 
-The most direct method: download a prebuilt binary for your OS and architecture from the [Kyverno GitHub releases page](https://github.com/kyverno/kyverno/releases). Release assets follow a fixed naming pattern:
+The most direct way is to download a ready-made binary. A tarball is a packed archive, like a sealed supply crate from the shipyard. Each Kyverno release publishes one crate per operating system and processor type, with a fixed naming pattern.
 
-```text
-kyverno-cli_v{VERSION}_{OS}_{ARCH}.tar.gz
-```
+### Install version 1.13.2 on Linux
 
-For example, installing CLI version `v1.13.2` on Linux x86_64:
+Here is a real install: CLI version `v1.13.2` for Linux on an `x86_64` processor. Download the crate, unpack it, and copy the binary onto your tool rack:
 
 ```sh
 curl -LO https://github.com/kyverno/kyverno/releases/download/v1.13.2/kyverno-cli_v1.13.2_linux_x86_64.tar.gz
@@ -32,42 +32,47 @@ tar -xvf kyverno-cli_v1.13.2_linux_x86_64.tar.gz
 sudo cp kyverno /usr/local/bin/
 ```
 
-The extracted archive contains a binary literally named `kyverno`. Copying it anywhere on your `PATH` (`/usr/local/bin` is the conventional choice) completes the install.
+The archive holds two files, `LICENSE` and a binary named simply `kyverno`. Copying that binary into any folder on your `PATH` finishes the install. `/usr/local/bin` is the usual choice.
 
-> [!WARNING]
-> **Common pitfall**
->
-> The CLI version and the in-cluster Kyverno controller version are two independent things — installing CLI `v1.13.2` does not require a cluster running controller `v1.13.2`. `kyverno apply` and `kyverno test` work entirely offline without any cluster at all. That said, for exam and production work you should keep them aligned to avoid subtle behavior differences between what the CLI simulates and what the live admission controller actually enforces.
+### The naming pattern
+
+Every release asset follows this pattern:
+
+```text
+kyverno-cli_v{VERSION}_{OS}_{ARCH}.tar.gz
+```
+
+For `v1.13.2`, the release has Linux assets for `x86_64`, `arm64` and `s390x`, and macOS assets (`darwin`) for `x86_64` and `arm64`. Windows gets `.zip` files instead of tarballs. If you get the version, the system or the processor wrong, that file simply does not exist, and `curl` downloads an error page instead of a crate.
 
 ## Method 2: Homebrew
 
-On macOS or Linux with [Homebrew](https://brew.sh) installed:
+On macOS or Linux with the Homebrew package manager installed, one command does it:
 
 ```sh
 brew install kyverno
 ```
 
-Homebrew installs the standalone `kyverno` binary and keeps it updated through `brew upgrade` like any other formula.
+Homebrew installs the standalone `kyverno` binary. It keeps the binary up to date through `brew upgrade`, like any other package.
 
-## Method 3: Krew (kubectl plugin manager)
+## Method 3: Krew, the kubectl plugin manager
 
-If you'd rather have Kyverno feel like a native `kubectl` subcommand, install it through [Krew](https://krew.sigs.k8s.io/):
+Krew is a plugin manager for `kubectl`. Use it if you want Kyverno to feel like a normal `kubectl` command:
 
 ```sh
 kubectl krew install kyverno
 ```
 
-Krew installs the plugin form, `kubectl-kyverno`, onto your `PATH` under Krew's own plugin directory. Verify it with:
+Krew installs the plugin form, `kubectl-kyverno`, into its own plugin folder on your `PATH`. Check it with:
 
 ```sh
 kubectl kyverno version
 ```
 
-Note the invocation: `kubectl kyverno`, not `kyverno`. This is a real `kubectl` subcommand as far as your shell and `kubectl` itself are concerned — it just happens to be Kyverno's binary underneath.
+Look at how you call it: `kubectl kyverno`, not `kyverno`. As far as your shell and `kubectl` are concerned, this is a real `kubectl` subcommand. Underneath, it is Kyverno's own binary.
 
-## Method 4: Building from source
+## Method 4: building from source
 
-For contributors or anyone who needs an unreleased commit, the project can be built directly:
+Contributors, or anyone who needs a change that is not released yet, can build the CLI from the source code:
 
 ```sh
 git clone https://github.com/kyverno/kyverno
@@ -76,16 +81,20 @@ make build-cli
 sudo mv ./cmd/cli/kubectl-kyverno/kubectl-kyverno /usr/local/bin/
 ```
 
-Note that the build target produces a binary named `kubectl-kyverno` even here — rename or symlink it to `kyverno` if you want the standalone invocation form instead of the `kubectl` plugin form.
+The build target produces a binary named `kubectl-kyverno`, even here. So you get the plugin form. Rename the file, or add a link named `kyverno`, if you want the standalone form instead.
 
 ## Which method should you use?
 
-- **CI pipelines:** the release tarball, pinned to an exact version, downloaded in a setup step — reproducible and doesn't depend on a package manager being present on the runner.
-- **Local development on macOS/Linux with Homebrew already in your toolchain:** Homebrew, for easy upgrades.
-- **You already live inside `kubectl` muscle memory and want Kyverno to feel native:** Krew.
-- **Testing an unreleased fix:** build from source.
+Each method fits a different situation. Pick the one that matches where the CLI will run:
 
-## Reference
+- **A CI pipeline** (continuous integration, the launch checklist every change must clear): the release tarball, pinned to an exact version and downloaded in a setup step. It is repeatable, and it does not need a package manager on the build machine.
+- **Your own macOS or Linux machine, where you already use Homebrew:** Homebrew, for easy upgrades.
+- **You live in `kubectl` all day and want Kyverno to feel built in:** Krew.
+- **You need a fix that is not released yet:** build from source.
 
-- [Kyverno CLI releases](https://github.com/kyverno/kyverno/releases) — the authoritative source for exact asset names per version.
-- [Krew plugin index](https://krew.sigs.k8s.io/plugins/) — confirms the plugin is still published under the name `kyverno`.
+## Common pitfalls
+
+> [!WARNING]
+> - **Thinking the CLI and the controller must match.** The CLI version and the version of the Kyverno controller in a cluster are separate things. `kyverno apply` and `kyverno test` work with no cluster at all. Still, keep them on the same version for exam and production work, so the CLI's results match what the live docking inspector enforces.
+> - **Downloading the wrong asset.** A typo in the version, the system or the processor type gives you an error page, not a crate. `tar` then fails, or you install nothing.
+> - **Typing `kyverno` after a Krew install.** Krew gives you `kubectl kyverno`. A bare `kyverno` gives `command not found`.

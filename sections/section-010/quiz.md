@@ -104,7 +104,7 @@ Which subcommand would you run to see the full, authoritative flag list for `kyv
 
 *   **Why B is correct:** Every Kyverno subcommand supports `--help`, which prints flags generated directly from the binary you have installed — guaranteed to match your exact version, unlike a web page that may document a different release.
 *   **Why others are incorrect:**
-    *   *Option A* invents a subcommand; `docs` is not how per-command help is retrieved in this CLI.
+    *   *Option A* is the wrong tool. `kyverno docs` does exist, but it generates reference documentation files; it is not how you read one command's flags in the terminal.
     *   *Option C* assumes a man page ships with the binary, which Kyverno's CLI does not install.
     *   *Option D* invents a flag on the wrong subcommand — `version` reports build metadata, not other subcommands' flags.
 </details>

@@ -45,13 +45,13 @@ modules:
         path: sections/section-010/README.md
 
       - type: reading
-        title: "Module 1: Installing & Verifying the Kyverno CLI"
+        title: "Installing & Verifying the Kyverno CLI"
         path: sections/section-010/module-01/course.md
       - type: reading
-        title: "Module 1.1: Installation Methods"
+        title: "Installation Methods"
         path: sections/section-010/module-01/course-01-installation-methods.md
       - type: reading
-        title: "Module 1.2: Verifying Installation & CLI Structure"
+        title: "Verifying Installation & CLI Structure"
         path: sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
       - type: reading
         title: Question
@@ -74,6 +74,10 @@ modules:
             url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_version/
           - name: "Kyverno releases"
             url: https://github.com/kyverno/kyverno/releases
+
+      - type: reading
+        title: "Wrap-Up: Mission Debrief"
+        path: sections/section-010/module-01/course-03-wrap-up.md
 
       - type: reading
         title: "Section 010 Knowledge Check: Installing Kyverno CLI"
