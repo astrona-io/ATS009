@@ -270,14 +270,17 @@ modules:
         path: sections/section-040/README.md
 
       - type: reading
-        title: "Module 1: JMESPath with the Kyverno CLI"
+        title: "JMESPath with the Kyverno CLI"
         path: sections/section-040/module-01/course.md
       - type: reading
-        title: "Module 1.1: JMESPath Fundamentals via kyverno jp query"
+        title: "Meet kyverno jp query"
         path: sections/section-040/module-01/course-01-jmespath-fundamentals-via-kyverno-jp-query.md
       - type: reading
-        title: "Module 1.2: Kyverno's Custom JMESPath Functions"
-        path: sections/section-040/module-01/course-02-kyvernos-custom-jmespath-functions.md
+        title: "Core JMESPath Syntax And Literals"
+        path: sections/section-040/module-01/course-02-core-jmespath-syntax-and-literals.md
+      - type: reading
+        title: "Kyverno's Custom JMESPath Functions"
+        path: sections/section-040/module-01/course-03-kyvernos-custom-jmespath-functions.md
       - type: reading
         title: Question
         path: sections/section-040/module-01/labs/lab-01/question.md
@@ -302,6 +305,10 @@ modules:
             url: https://kyverno.io/docs/policy-types/cluster-policy/jmespath/
           - name: "JMESPath specification"
             url: https://jmespath.org/specification.html
+
+      - type: reading
+        title: "Wrap-Up: Mission Debrief"
+        path: sections/section-040/module-01/course-04-wrap-up.md
 
       - type: reading
         title: "Section 040 Knowledge Check: kyverno jp"
