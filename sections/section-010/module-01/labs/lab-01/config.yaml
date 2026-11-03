@@ -11,9 +11,31 @@ bootstrap:
       type: "file"
       source: "bootstrap/01-install-kyverno.sh"
 
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Installs the v1.13.2 CLI the way the solution describes"
+      type: "file"
+      source: "solution/apply.sh"
+
 validation:
   scripts:
-    - name: "verify-kyverno-cli-installed"
-      description: "Confirms the kyverno CLI binary is installed, on PATH, executable, and reports the expected version"
+    - name: "kyverno-on-path"
+      description: "The kyverno binary is on the PATH and executable"
       type: "file"
-      source: "validation/validate-completed.sh"
+      source: "validation/validate-cli-on-path.sh"
+      hint: "Copy the unpacked kyverno file into a folder on your PATH, such as /usr/local/bin, and make sure it may run."
+    - name: "kyverno-version-pinned"
+      description: "kyverno version runs and reports 1.13.2"
+      type: "file"
+      source: "validation/validate-version-pinned.sh"
+      hint: "Download the v1.13.2 Linux x86_64 tarball. The binary prints Version: 1.13.2 without a v. Use which -a kyverno to look for an older copy that wins."
+    - name: "kyverno-is-real-cli"
+      description: "kyverno help lists the apply, test, jp and version subcommands"
+      type: "file"
+      source: "validation/validate-real-cli.sh"
+      hint: "Install the binary from the official tarball, not an empty or renamed file."
+
+teardown:
+  keepCluster: false

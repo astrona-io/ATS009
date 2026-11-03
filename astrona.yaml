@@ -1,26 +1,44 @@
+# Course manifest for ATS009 - Kyverno CLI (Kyverno Certified Associate).
+#
+# One entry per section under `modules:`. Each section lists, in order: its
+# README, then for each module the landing page (course.md), its parts
+# (course-0N-*.md), and right after the part a lab tests, the lab's
+# question.md reading and the `type: lab` entry. The module's summary page
+# comes last. The section quiz (`type: quiz`) follows, and the section
+# capstone closes the section. Playgrounds are not listed: the landing page
+# marker shows them. solution.md files are never listed.
+#
+# Every `path:` is relative to this file.
+
 training:
   id: ATS009
   title: "KCA: Kyverno CLI"
   description: >
-    Training material covering the Kyverno CLI domain for the Kyverno
-    Certified Associate (KCA) learning path, with hands-on labs for each
-    competency running on a kind Kubernetes cluster.
+    Training material covering the Kyverno CLI domain of the Kyverno
+    Certified Associate (KCA) exam: installing the kyverno binary, testing
+    policies offline and against a live cluster with kyverno apply, writing
+    test suites with kyverno test, and debugging JMESPath expressions with
+    kyverno jp. Each module pairs a layered reader with a graded practice
+    lab on a kind cluster, and each section closes with an integration
+    capstone. Built against Kyverno and the Kyverno CLI v1.13.2.
 
   certification:
     name: Kyverno Certified Associate
     code: KCA
-    provider: Kyverno Project (CNCF Sandbox)
+    provider: Kyverno Project (CNCF)
     domain: Kyverno CLI
-    weight: 100
+    weight: 12
 
 modules:
+
   - id: module-010
     title: "Section 010: Installing Kyverno CLI"
     description: >
       Get the kyverno binary onto your machine and verify it actually
-      works: the release binary, Homebrew, the install script, and the
-      krew plugin, plus reading kyverno version output and navigating the
-      CLI's subcommand tree.
+      works: the release tarball, Homebrew, the Krew plugin and building
+      from source, checking a download against its checksum, then the CLI
+      toolbox: help, the experimental switch, kyverno docs, shell
+      completion, the kubectl plugin name and kyverno create scaffolds.
 
     content:
       - type: reading
@@ -28,53 +46,114 @@ modules:
         path: sections/section-010/README.md
 
       - type: reading
-        title: "Module 1: Installing & Verifying the Kyverno CLI"
+        title: "Installing & Verifying the Kyverno CLI"
         path: sections/section-010/module-01/course.md
-
       - type: reading
-        title: "Module 1.1: Installation Methods"
+        title: "Installation Methods"
         path: sections/section-010/module-01/course-01-installation-methods.md
-
       - type: reading
-        title: "Module 1.2: Verifying Installation & CLI Structure"
+        title: "Verifying Installation & CLI Structure"
         path: sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
-
       - type: reading
         title: Question
         path: sections/section-010/module-01/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-010/module-01/labs/lab-01/solution.md
-
       - type: lab
         title: "Kyverno CLI Installation Lab"
         path: sections/section-010/module-01/labs/lab-01
-        difficulty: intermediate
+        difficulty: beginner
+        estimated_duration: 15m
+        topic: installation
+        task_kind: build
+        tags: [release-tarball, path, kyverno-version, version-pinning]
+        learning_goals:
+          - Install a pinned Kyverno CLI release from its GitHub tarball
+          - Prove with kyverno version which binary the shell runs
+        resources:
+          - name: "Kyverno CLI"
+            url: https://kyverno.io/docs/subprojects/kyverno-cli/
+          - name: "kyverno version reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_version/
+          - name: "Kyverno releases"
+            url: https://github.com/kyverno/kyverno/releases
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-01/course-03-summary.md
 
       - type: reading
+        title: "The Kyverno CLI Toolbox"
+        path: sections/section-010/module-02/course.md
+      - type: reading
+        title: "Finding Your Way Around the CLI"
+        path: sections/section-010/module-02/course-01-finding-your-way.md
+      - type: reading
+        title: "Shell Completion and the Plugin Name"
+        path: sections/section-010/module-02/course-02-completion-and-the-plugin-name.md
+      - type: reading
+        title: "Scaffolding Files with kyverno create"
+        path: sections/section-010/module-02/course-03-scaffolding-with-create.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "The Kyverno CLI Toolbox Lab"
+        path: sections/section-010/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: installation
+        task_kind: build
+        tags: [kubectl-plugin, shell-completion, cli-help, kyverno-version, path]
+        learning_goals:
+          - Generate the CLI command reference with kyverno docs
+          - Generate a zsh completion script
+          - Give the binary the kubectl plugin name
+          - Scaffold a test file and a user-info file with kyverno create
+        resources:
+          - name: "Kyverno CLI"
+            url: https://kyverno.io/docs/subprojects/kyverno-cli/
+          - name: "kyverno create reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_create/
+          - name: "kyverno completion reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_completion/
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-02/course-04-summary.md
+
+      - type: quiz
         title: "Section 010 Knowledge Check: Installing Kyverno CLI"
-        path: sections/section-010/quiz.md
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
 
       - type: reading
         title: Question
         path: sections/section-010/capstone/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-010/capstone/labs/lab-01/solution.md
-
       - type: lab
         title: "Kyverno CLI Installation Capstone Lab"
         path: sections/section-010/capstone/labs/lab-01
-        difficulty: advanced
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: installation
+        task_kind: build
+        tags: [release-tarball, version-pinning, checksum, kyverno-version, shell-completion, path]
+        learning_goals:
+          - Install the v1.13.2 CLI so it is byte for byte the official release binary
+          - Check a release tarball against the published checksums file
+          - Generate a bash completion script for the kyverno command
+        resources:
+          - name: "Kyverno CLI"
+            url: https://kyverno.io/docs/subprojects/kyverno-cli/
+          - name: "kyverno completion reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_completion/
+          - name: "Kyverno releases"
+            url: https://github.com/kyverno/kyverno/releases
 
   - id: module-020
     title: "Section 020: kyverno apply"
     description: >
       Use kyverno apply to test policies against resources offline, no
       cluster required, then point the same command at a live cluster
-      with --cluster to evaluate real objects and emit PolicyReports.
+      with --cluster. Preview mutate and generate rules, pass request data
+      with user info and values, and shape exceptions, warnings and exit
+      codes for a pipeline.
 
     content:
       - type: reading
@@ -82,54 +161,155 @@ modules:
         path: sections/section-020/README.md
 
       - type: reading
-        title: "Module 1: Applying Policies with the Kyverno CLI"
+        title: "Applying Policies with the Kyverno CLI"
         path: sections/section-020/module-01/course.md
-
       - type: reading
-        title: "Module 1.1: Offline Policy Apply"
+        title: "Offline Policy Apply"
         path: sections/section-020/module-01/course-01-offline-policy-apply.md
-
       - type: reading
-        title: "Module 1.2: Applying Against a Live Cluster & Policy Reports"
-        path: sections/section-020/module-01/course-02-applying-against-a-live-cluster-and-policy-reports.md
-
+        title: "Supplying Variables With A Values File"
+        path: sections/section-020/module-01/course-02-supplying-variables-with-a-values-file.md
+      - type: reading
+        title: "Applying Against a Live Cluster & Policy Reports"
+        path: sections/section-020/module-01/course-03-applying-against-a-live-cluster-and-policy-reports.md
       - type: reading
         title: Question
         path: sections/section-020/module-01/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-020/module-01/labs/lab-01/solution.md
-
       - type: lab
         title: "Offline & Cluster Policy Apply Lab"
         path: sections/section-020/module-01/labs/lab-01
-        difficulty: intermediate
+        difficulty: beginner
+        estimated_duration: 25m
+        topic: apply
+        task_kind: build
+        tags: [kyverno-apply, offline-apply, cluster-apply, policy-report, namespace-scope, enforce, admission]
+        learning_goals:
+          - Run kyverno apply offline against two resource files and save the result as a table
+          - Generate a ClusterPolicyReport from live Pods with --cluster and --policy-report
+          - Show that an Enforce policy blocks a new Pod but leaves an older Pod running
+        resources:
+          - name: "kyverno apply reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_apply/
+          - name: "Kyverno CLI"
+            url: https://kyverno.io/docs/subprojects/kyverno-cli/
+          - name: "Policy reports"
+            url: https://kyverno.io/docs/guides/reports/
+      - type: reading
+        title: "Summary: Applying Policies with the Kyverno CLI"
+        path: sections/section-020/module-01/course-04-summary.md
 
       - type: reading
-        title: "Section 020 Knowledge Check: kyverno apply"
-        path: sections/section-020/quiz.md
+        title: "Mutate And Generate With apply"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "Mutating Resources And Saving The Result"
+        path: sections/section-020/module-02/course-01-mutating-resources-and-saving-the-result.md
+      - type: reading
+        title: "Generating Resources From A Trigger"
+        path: sections/section-020/module-02/course-02-generating-resources-from-a-trigger.md
+      - type: reading
+        title: "Request Data: User Info, Operation And Namespace Labels"
+        path: sections/section-020/module-02/course-03-request-data-user-info-operation-and-namespace-labels.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Mutate And Generate With apply Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: apply
+        task_kind: build
+        tags: [kyverno-apply, offline-apply, mutate-rule, generate-rule, user-info, kubectl]
+        learning_goals:
+          - Preview a mutate rule with kyverno apply and save the patched Pod with -o
+          - Preview a generate rule from a Namespace trigger and read the resource it builds
+          - Pass a user info file with -u so a role-based policy passes, then apply the mutated Pod
+        resources:
+          - name: "kyverno apply reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_apply/
+          - name: "Mutate rules"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/mutate/
+          - name: "Generate rules"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/generate/
+      - type: reading
+        title: "Summary: Mutate And Generate With apply"
+        path: sections/section-020/module-02/course-04-summary.md
+
+      - type: reading
+        title: "Exceptions, Warnings And Exit Codes In Pipelines"
+        path: sections/section-020/module-03/course.md
+      - type: reading
+        title: "Exceptions With -e"
+        path: sections/section-020/module-03/course-01-exceptions-with-policy-exceptions.md
+      - type: reading
+        title: "Warnings And Exit Codes"
+        path: sections/section-020/module-03/course-02-warnings-and-exit-codes.md
+      - type: reading
+        title: "Reading The Results"
+        path: sections/section-020/module-03/course-03-reading-the-results.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Exceptions, Warnings And Exit Codes Lab"
+        path: sections/section-020/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: apply
+        task_kind: troubleshooting
+        tags: [kyverno-apply, offline-apply, policy-exception, exit-codes, ci-gate, enforce]
+        learning_goals:
+          - Write a PolicyException that excuses one Pod and pass it with -e
+          - Set the exit code for warnings with --audit-warn and --warn-exit-code
+          - Save a --table run that shows a warning and a pass
+        resources:
+          - name: "kyverno apply reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_apply/
+          - name: "Policy exceptions"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/policy-exceptions/
+          - name: "Kyverno CLI"
+            url: https://kyverno.io/docs/subprojects/kyverno-cli/
+      - type: reading
+        title: "Summary: Exceptions, Warnings And Exit Codes In Pipelines"
+        path: sections/section-020/module-03/course-04-summary.md
+
+      - type: quiz
+        title: "Knowledge Check: kyverno apply"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
 
       - type: reading
         title: Question
         path: sections/section-020/capstone/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-020/capstone/labs/lab-01/solution.md
-
       - type: lab
         title: "kyverno apply Capstone Lab"
         path: sections/section-020/capstone/labs/lab-01
-        difficulty: advanced
+        difficulty: intermediate
+        estimated_duration: 35m
+        topic: apply
+        task_kind: build
+        tags: [kyverno-apply, values-file, context-variables, configmap-context, cluster-apply, policy-report, enforce]
+        learning_goals:
+          - Mock a ConfigMap context lookup with a values file for an offline apply
+          - Prove the live policy reads the real ConfigMap and blocks an untrusted image
+          - Audit a namespace with kyverno apply --cluster and a policy report
+        resources:
+          - name: "kyverno apply reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_apply/
+          - name: "External data sources"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/external-data-sources/
+          - name: "Variables"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/variables/
 
+# NEW LAB NAMES to add to the CLAUDE.md lab table: sections/section-030/module-02/labs/lab-01 = ats-009-lab-012, sections/section-030/module-03/labs/lab-01 = ats-009-lab-013
   - id: module-030
     title: "Section 030: kyverno test"
     description: >
       Author a kyverno-test.yaml test manifest that declares expected
-      pass/fail/skip results for a set of policies and resources, then run
-      it locally or straight from a Git repository and read the results
-      the way a CI pipeline would.
+      pass/fail/skip results for a set of policies and resources, test
+      mutate, generate, variable, user info and exception cases, and run
+      it locally or straight from a Git repository the way a CI pipeline would.
 
     content:
       - type: reading
@@ -137,54 +317,143 @@ modules:
         path: sections/section-030/README.md
 
       - type: reading
-        title: "Module 1: Writing & Running Kyverno Test Suites"
+        title: "Writing & Running Kyverno Test Suites"
         path: sections/section-030/module-01/course.md
-
       - type: reading
-        title: "Module 1.1: Test Manifest Anatomy"
+        title: "Test Manifest Anatomy"
         path: sections/section-030/module-01/course-01-test-manifest-anatomy.md
-
       - type: reading
-        title: "Module 1.2: Running & Interpreting Test Results"
-        path: sections/section-030/module-01/course-02-running-and-interpreting-test-results.md
-
+        title: "Autogen Names, Foreach And Deny Rules"
+        path: sections/section-030/module-01/course-02-autogen-names-foreach-and-deny.md
+      - type: reading
+        title: "Running & Interpreting Test Results"
+        path: sections/section-030/module-01/course-03-running-and-interpreting-test-results.md
       - type: reading
         title: Question
         path: sections/section-030/module-01/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-030/module-01/labs/lab-01/solution.md
-
       - type: lab
         title: "Kyverno Test Suite Lab"
         path: sections/section-030/module-01/labs/lab-01
-        difficulty: intermediate
+        difficulty: beginner
+        estimated_duration: 20m
+        topic: testing
+        task_kind: troubleshooting
+        tags: [kyverno-test, test-manifest, test-results, resource-grouping, ci-gate]
+        learning_goals:
+          - Read kyverno test output to find which expected result is wrong
+          - Fix a test manifest so each resource asserts its real result
+        resources:
+          - name: "Testing policies"
+            url: https://kyverno.io/docs/guides/testing-policies/
+          - name: "kyverno test reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_test/
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-01/course-04-summary.md
 
       - type: reading
+        title: "Testing Mutate and Generate Rules"
+        path: sections/section-030/module-02/course.md
+      - type: reading
+        title: "Testing Mutate Rules"
+        path: sections/section-030/module-02/course-01-testing-mutate-rules.md
+      - type: reading
+        title: "Testing Generate Rules"
+        path: sections/section-030/module-02/course-02-testing-generate-rules.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Mutate And Generate Test Lab"
+        path: sections/section-030/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: testing
+        task_kind: build
+        tags: [kyverno-test, test-manifest, mutate-rule, generate-rule, resource-grouping]
+        learning_goals:
+          - Write the expected patched and generated resources for a mutate and a generate rule
+          - Write one test manifest that proves a mutate pass, a mutate skip and a generated resource
+        resources:
+          - name: "Testing policies"
+            url: https://kyverno.io/docs/guides/testing-policies/
+          - name: "kyverno test reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_test/
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-02/course-03-summary.md
+
+      - type: reading
+        title: "Variables, User Info, Exceptions And Large Suites"
+        path: sections/section-030/module-03/course.md
+      - type: reading
+        title: "Variables And User Info"
+        path: sections/section-030/module-03/course-01-variables-and-user-info.md
+      - type: reading
+        title: "Exceptions And Skip Results"
+        path: sections/section-030/module-03/course-02-exceptions-and-skip-results.md
+      - type: reading
+        title: "Organising Large Test Suites"
+        path: sections/section-030/module-03/course-03-organising-large-test-suites.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Variables, Exceptions And Suites Lab"
+        path: sections/section-030/module-03/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 30m
+        topic: testing
+        task_kind: build
+        tags: [kyverno-test, values-file, context-variables, user-info, policy-exception, ci-gate]
+        learning_goals:
+          - Supply a variable, a requester and an exception to a kyverno test run
+          - Organise three test manifests in folders so one kyverno test run covers them all
+        resources:
+          - name: "Testing policies"
+            url: https://kyverno.io/docs/guides/testing-policies/
+          - name: "kyverno test reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_test/
+          - name: "Variables"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/variables/
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-03/course-04-summary.md
+
+      - type: quiz
         title: "Section 030 Knowledge Check: kyverno test"
-        path: sections/section-030/quiz.md
+        path: sections/section-030/quiz.yaml
+        pass_score: 70
 
       - type: reading
         title: Question
         path: sections/section-030/capstone/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-030/capstone/labs/lab-01/solution.md
-
       - type: lab
         title: "kyverno test Capstone Lab"
         path: sections/section-030/capstone/labs/lab-01
-        difficulty: advanced
+        difficulty: intermediate
+        estimated_duration: 35m
+        topic: testing
+        task_kind: build
+        tags: [kyverno-test, test-manifest, test-results, resource-grouping, validate-rule, pattern, ci-gate]
+        learning_goals:
+          - Work out the real result of three rules for four Pods
+          - Write a kyverno-test.yaml from scratch that groups resources with the same result
+        resources:
+          - name: "Testing policies"
+            url: https://kyverno.io/docs/guides/testing-policies/
+          - name: "kyverno test reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_test/
+          - name: "Validate rules"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/validate/
 
   - id: module-040
     title: "Section 040: kyverno jp"
     description: >
       Debug the JMESPath expressions Kyverno policies rely on before they
-      ever touch a cluster: querying JSON with kyverno jp query, and using
-      Kyverno's custom JMESPath functions the same way context and
-      preconditions blocks do.
+      ever touch a cluster: querying JSON with kyverno jp query, using
+      Kyverno's custom functions, and the harder moves on real policy data
+      such as flattening, sorting, quantity math, base64 and safe defaults.
 
     content:
       - type: reading
@@ -192,55 +461,122 @@ modules:
         path: sections/section-040/README.md
 
       - type: reading
-        title: "Module 1: JMESPath with the Kyverno CLI"
+        title: "JMESPath with the Kyverno CLI"
         path: sections/section-040/module-01/course.md
-
       - type: reading
-        title: "Module 1.1: JMESPath Fundamentals via kyverno jp query"
+        title: "Meet kyverno jp query"
         path: sections/section-040/module-01/course-01-jmespath-fundamentals-via-kyverno-jp-query.md
-
       - type: reading
-        title: "Module 1.2: Kyverno's Custom JMESPath Functions"
-        path: sections/section-040/module-01/course-02-kyvernos-custom-jmespath-functions.md
-
+        title: "Core JMESPath Syntax And Literals"
+        path: sections/section-040/module-01/course-02-core-jmespath-syntax-and-literals.md
+      - type: reading
+        title: "Kyverno's Custom JMESPath Functions"
+        path: sections/section-040/module-01/course-03-kyvernos-custom-jmespath-functions.md
       - type: reading
         title: Question
         path: sections/section-040/module-01/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-040/module-01/labs/lab-01/solution.md
-
       - type: lab
         title: "kyverno jp Query Lab"
         path: sections/section-040/module-01/labs/lab-01
-        difficulty: intermediate
+        difficulty: beginner
+        estimated_duration: 20m
+        topic: jmespath
+        task_kind: build
+        tags: [kyverno-jp, jp-query, jp-function, jmespath-syntax, string-functions, pattern-match, literals]
+        learning_goals:
+          - Extract single values from a Pod document with kyverno jp query
+          - Clean and convert strings with Kyverno's trim and to_lower functions
+          - Check an image against a glob pattern with pattern_match
+        resources:
+          - name: "kyverno jp query reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_query/
+          - name: "kyverno jp function reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_function/
+          - name: "JMESPath in Kyverno"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/jmespath/
+          - name: "JMESPath specification"
+            url: https://jmespath.org/specification.html
+      - type: reading
+        title: "Summary"
+        path: sections/section-040/module-01/course-04-summary.md
 
       - type: reading
+        title: "Advanced JMESPath: Functions, Projections And Real Policy Data"
+        path: sections/section-040/module-02/course.md
+      - type: reading
+        title: "Shaping Lists And Objects"
+        path: sections/section-040/module-02/course-01-shaping-lists-and-objects.md
+      - type: reading
+        title: "Sorting, Counting And Combining With Built-In Functions"
+        path: sections/section-040/module-02/course-02-stock-functions-for-sorting-counting-and-combining.md
+      - type: reading
+        title: "Kyverno Functions On Real Policy Data"
+        path: sections/section-040/module-02/course-03-kyverno-functions-on-real-policy-data.md
+      - type: reading
+        title: "Defaults, Requests And Debugging Tools"
+        path: sections/section-040/module-02/course-04-defaults-requests-and-debugging-tools.md
+      - type: reading
+        title: Question
+        path: sections/section-040/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Advanced JMESPath Lab"
+        path: sections/section-040/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: jmespath
+        task_kind: build
+        tags: [kyverno-jp, max-by, sort-by, parse-json, base64, quantity-math, time-since, projections]
+        learning_goals:
+          - Pick, count and sort fleet data with max_by, length and sort
+          - Open a string of JSON and a base64 token with parse_json and base64_decode
+          - Do quantity and time math with multiply and time_since
+        resources:
+          - name: "kyverno jp query reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_query/
+          - name: "kyverno jp function reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_function/
+          - name: "JMESPath in Kyverno"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/jmespath/
+      - type: reading
+        title: "Summary"
+        path: sections/section-040/module-02/course-05-summary.md
+
+      - type: quiz
         title: "Section 040 Knowledge Check: kyverno jp"
-        path: sections/section-040/quiz.md
+        path: sections/section-040/quiz.yaml
 
       - type: reading
         title: Question
         path: sections/section-040/capstone/labs/lab-01/question.md
-
-      - type: reading
-        title: Solution Walkthrough
-        path: sections/section-040/capstone/labs/lab-01/solution.md
-
       - type: lab
         title: "kyverno jp Capstone Lab"
         path: sections/section-040/capstone/labs/lab-01
-        difficulty: advanced
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: jmespath
+        task_kind: build
+        tags: [kyverno-jp, jp-query, jp-function, semver-compare, label-match, regex-match, string-functions]
+        learning_goals:
+          - Cut a version tag out of an image reference with split
+          - Check a version, a label selector and an email shape with Kyverno functions
+          - Read a function's signature with kyverno jp function before using it
+        resources:
+          - name: "kyverno jp function reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_function/
+          - name: "JMESPath in Kyverno"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/jmespath/
+          - name: "kyverno jp query reference"
+            url: https://kyverno.io/docs/kyverno-cli/reference/kyverno_jp_query/
 
   - id: module-050
     title: "KCA Kyverno CLI Certification Quiz"
     description: >
-      A comprehensive, scenario-based final assessment covering all 4
+      A comprehensive, scenario-based final assessment covering all
       modules across the 4 Kyverno CLI sections, simulating exam-style
       pressure.
 
     content:
-      - type: reading
+      - type: quiz
         title: "Final Domain Certification Quiz"
-        path: sections/final-domain-quiz.md
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70

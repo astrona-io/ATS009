@@ -11,9 +11,31 @@ bootstrap:
       type: "file"
       source: "bootstrap/01-install-kyverno.sh"
 
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Installs the v1.13.2 CLI, checks the checksum and writes the bash completion script"
+      type: "file"
+      source: "solution/apply.sh"
+
 validation:
   scripts:
-    - name: "verify-section-010-capstone"
-      description: "Confirms the installed kyverno binary is bit-identical to the official v1.13.2 release artifact and that bash completion is enabled"
+    - name: "binary-is-official"
+      description: "The installed kyverno is byte for byte the official v1.13.2 release binary"
       type: "file"
-      source: "validation/validate-completed.sh"
+      source: "validation/validate-binary-official.sh"
+      hint: "Install the binary exactly as it comes out of the v1.13.2 Linux x86_64 tarball. Do not rebuild or edit it."
+    - name: "version-pinned"
+      description: "kyverno version runs and reports 1.13.2"
+      type: "file"
+      source: "validation/validate-version-pinned.sh"
+      hint: "The binary prints Version: 1.13.2 without a v. Use which -a kyverno to look for an older copy that wins."
+    - name: "bash-completion-written"
+      description: "/etc/bash_completion.d/kyverno holds a bash completion script for kyverno"
+      type: "file"
+      source: "validation/validate-bash-completion.sh"
+      hint: "Run kyverno completion bash and write its output to /etc/bash_completion.d/kyverno."
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,300 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after each module's lab.
+schema_version: 1
+kind: question_bank
+id: ats009-010
+course_id: ATS009
+exam_code: KCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-010
+  title: "Installing Kyverno CLI"
+questions:
+  - id: ats009-010-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Install the Kyverno CLI from a GitHub release tarball for a specific version, operating system and processor type."
+    source_readings:
+      - sections/section-010/module-01/course-01-installation-methods.md
+    prompt: |-
+      A CI step must install Kyverno CLI version `v1.13.2` on a Linux machine with an `arm64` processor, straight from the GitHub release. Which asset do you download?
+    options:
+      - id: a
+        text: "`kyverno-cli_1.13.2_arm64_linux.tar.gz`"
+        explanation: "This name has no `v` before the version and swaps the system and the processor type. Release assets follow one fixed pattern, so this file does not exist."
+      - id: b
+        text: "`kyverno-cli_v1.13.2_windows_arm64.zip`"
+        explanation: "This is the Windows asset. Windows releases are `.zip` files, and the file would not run on Linux."
+      - id: c
+        text: "`kyverno-cli_v1.13.2_linux_arm64.tar.gz`"
+        explanation: "Correct. Assets follow the pattern `kyverno-cli_v{VERSION}_{OS}_{ARCH}.tar.gz`, and the release has Linux assets for `x86_64`, `arm64` and `s390x`."
+      - id: d
+        text: "`kyverno-cli_v1.13.2_linux_x86_64.tar.gz`"
+        explanation: "This is the right system but the wrong processor type. The binary inside is built for `x86_64` and does not run on an `arm64` machine."
+    correct_option: c
+    explanation: "Release assets follow the pattern `kyverno-cli_v{VERSION}_{OS}_{ARCH}.tar.gz`. A wrong version, system or processor type points at a file that does not exist."
+
+  - id: ats009-010-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Install the Kyverno CLI with Homebrew and with Krew, and explain how you call it after each one."
+    source_readings:
+      - sections/section-010/module-01/course-01-installation-methods.md
+    prompt: |-
+      One colleague installed the CLI with `brew install kyverno`. Another installed it with `kubectl krew install kyverno`. How does each of them check the version?
+    options:
+      - id: a
+        text: "The Homebrew user runs `kyverno version`. The Krew user runs `kubectl kyverno version`."
+        explanation: "Correct. Homebrew installs the standalone `kyverno` binary. Krew installs the plugin `kubectl-kyverno`, which `kubectl` runs as `kubectl kyverno`."
+      - id: b
+        text: "Both run `kyverno version`."
+        explanation: "A Krew install does not put a bare `kyverno` on the `PATH`, so the Krew user gets `command not found`."
+      - id: c
+        text: "Both run `kubectl kyverno version`."
+        explanation: "Homebrew installs the standalone binary, not a `kubectl` plugin, so `kubectl` does not know a `kyverno` subcommand there."
+      - id: d
+        text: "The Homebrew user runs `kubectl kyverno version`. The Krew user runs `kyverno version`."
+        explanation: "The two forms are swapped. Homebrew gives `kyverno` and Krew gives `kubectl kyverno`."
+    correct_option: a
+    explanation: "Homebrew gives the standalone `kyverno` binary. Krew gives the plugin form, called as `kubectl kyverno`. Both run the same code."
+
+  - id: ats009-010-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read `kyverno version` to confirm the exact version, build time and commit you installed."
+    source_readings:
+      - sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
+    prompt: |-
+      A setup script installs the `v1.13.2` CLI and then runs `kyverno version | grep "v1.13.2"`. The install worked, but the script reports a failure. What is the cause, and what is the fix?
+    options:
+      - id: a
+        text: "The binary is broken. Download the tarball again."
+        explanation: "The binary is fine. The check is the problem, not the install."
+      - id: b
+        text: "`kyverno version` needs a cluster. Start one before the check."
+        explanation: "`kyverno version` reads no cluster. It prints details of the binary only."
+      - id: c
+        text: "The version line shows `Version: 1.13.2` only after the controller is installed."
+        explanation: "The CLI prints its own version at any time. It does not depend on the controller."
+      - id: d
+        text: "The 1.13.2 binary prints `Version: 1.13.2` with no `v`. Search for `1.13.2` instead."
+        explanation: "Correct. The release is called `v1.13.2`, but the binary reports `1.13.2`. The output also holds the build time and the Git commit."
+    correct_option: d
+    explanation: "The release name has a `v` and the binary's version line does not. A check should look for the number."
+
+  - id: ats009-010-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Check a downloaded release against the published `checksums.txt` file, and find which `kyverno` file your shell really runs."
+    source_readings:
+      - sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
+    prompt: |-
+      You copied the `v1.13.2` binary to `/usr/local/bin/kyverno`, but `kyverno version` shows an older number. `ls /usr/local/bin/kyverno` shows the new file. What is the best next command?
+    options:
+      - id: a
+        text: "`kyverno version --force`"
+        explanation: "There is no such flag, and it would not change which file the shell runs."
+      - id: b
+        text: "`which -a kyverno`, then read the first path it prints"
+        explanation: "Correct. `which -a` lists every copy in `PATH` order. The first one wins, so an older copy earlier on the `PATH` explains the old number."
+      - id: c
+        text: "`kyverno completion bash`"
+        explanation: "This prints a completion script. It does not tell you which file the shell runs."
+      - id: d
+        text: "Install the controller again with `kubectl create -f install.yaml`"
+        explanation: "The controller and the CLI are separate. Reinstalling the controller does not change the file your shell runs."
+    correct_option: b
+    explanation: "When two copies exist, the folder that comes first on the `PATH` wins. `which -a kyverno` shows them all in order."
+
+  - id: ats009-010-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Check a downloaded release against the published `checksums.txt` file, and find which `kyverno` file your shell really runs."
+    source_readings:
+      - sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
+    prompt: |-
+      Before you unpack a downloaded Kyverno release tarball, you want proof that it is the file the project published. What do you do?
+    options:
+      - id: a
+        text: "Unpack it and run `kyverno version` to see that the number is right."
+        explanation: "A binary can print any version it likes. The number does not prove where the file came from."
+      - id: b
+        text: "Compare the size of the file with the size shown on the release page."
+        explanation: "Two different files can have the same size. A size match is not proof."
+      - id: c
+        text: "Compute its SHA-256 checksum and compare it with the line for that asset in the release's `checksums.txt`."
+        explanation: "Correct. `checksums.txt` is the seal number on the shipping papers. `grep <asset> checksums.txt | sha256sum -c -` does the comparison and prints `OK` when it matches."
+      - id: d
+        text: "Compute the checksum of the unpacked `kyverno` binary and compare it with `checksums.txt`."
+        explanation: "`checksums.txt` lists checksums of the release assets, the tarballs. It does not list the files inside them."
+    correct_option: c
+    explanation: "Check the tarball against the asset's line in `checksums.txt`, before you unpack it."
+
+  - id: ats009-010-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Upgrade the CLI to a new version and remove it again, for each install method."
+    source_readings:
+      - sections/section-010/module-01/course-01-installation-methods.md
+    prompt: |-
+      You installed the CLI by copying `kyverno` from a release tarball into `/usr/local/bin`. A new version comes out. How do you upgrade, and how do you remove it later?
+    options:
+      - id: a
+        text: "Repeat the install with the new version number so the new file replaces the old one. Remove it by deleting `/usr/local/bin/kyverno`."
+        explanation: "Correct. A tarball install has no package manager behind it. You replace the file to upgrade and delete the file to remove."
+      - id: b
+        text: "Run `brew upgrade kyverno`, and later `brew uninstall kyverno`."
+        explanation: "Homebrew only manages what Homebrew installed. It does not know about a file you copied by hand."
+      - id: c
+        text: "Run `kubectl krew upgrade kyverno`, and later `kubectl krew uninstall kyverno`."
+        explanation: "Krew only manages plugins that Krew installed."
+      - id: d
+        text: "Run `kyverno upgrade`, and later `kyverno uninstall`."
+        explanation: "The CLI has no `upgrade` or `uninstall` command."
+    correct_option: a
+    explanation: "Upgrade and remove with the tool that installed it. For a hand-copied tarball binary, that means replacing or deleting the file."
+
+  - id: ats009-010-q07
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "List the subcommands with `kyverno help`, and generate a bash completion script for the `kyverno` command."
+    source_readings:
+      - sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
+    prompt: |-
+      You ran `kyverno completion bash > /etc/bash_completion.d/kyverno`. In the same terminal, pressing the tab key after `kyverno ` offers nothing. What is the most likely reason?
+    options:
+      - id: a
+        text: "The CLI does not support completion for bash."
+        explanation: "It does. `kyverno completion` supports bash, zsh, fish and PowerShell."
+      - id: b
+        text: "The script has to be applied to the cluster with `kubectl apply`."
+        explanation: "A completion script is for your shell. It has nothing to do with the cluster."
+      - id: c
+        text: "`/etc/bash_completion.d` must hold a file named `kyverno.sh`."
+        explanation: "The file name `kyverno` is correct. The folder is read by name, and the problem is when it is read."
+      - id: d
+        text: "The shell reads completion scripts when it starts. Open a new shell, or run `source /etc/bash_completion.d/kyverno`."
+        explanation: "Correct. The script did not exist when this shell started, so the shell has not loaded it yet."
+    correct_option: d
+    explanation: "A shell loads completion scripts at start-up. Open a new shell, or load the script by hand with `source`."
+
+  - id: ats009-010-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Walk the subcommand tree with `--help`, read the usage, examples and flags of any command, and use the global flags `-v` and `--kubeconfig`."
+    source_readings:
+      - sections/section-010/module-02/course-01-finding-your-way.md
+    prompt: |-
+      You work on a machine with two kubeconfig files and want to point the CLI at the cluster in the second one. Which command needs the `--kubeconfig` flag?
+    options:
+      - id: a
+        text: "`kyverno version`"
+        explanation: "`version` prints details of the binary and reads no cluster."
+      - id: b
+        text: "`kyverno apply policy.yaml --cluster --kubeconfig <PATH>`"
+        explanation: "Correct. `--cluster` makes `apply` read resources from a live cluster, and `--kubeconfig` says which cluster. Offline runs never read it."
+      - id: c
+        text: "`kyverno jp query -i pod.json 'metadata.name'`"
+        explanation: "`jp query` works on a JSON file and talks to no cluster."
+      - id: d
+        text: "`kyverno create user-info -u alice@example.com`"
+        explanation: "`create` only prints a starter file. It talks to no cluster."
+    correct_option: b
+    explanation: "`--kubeconfig` is a global flag, but only commands that read from a cluster, such as `apply --cluster`, use it."
+
+  - id: ats009-010-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Reveal the experimental commands with the `KYVERNO_EXPERIMENTAL` switch, and print the command reference with `kyverno docs`."
+    source_readings:
+      - sections/section-010/module-02/course-01-finding-your-way.md
+    prompt: |-
+      A colleague's script runs `KYVERNO_EXPERIMENTAL=true kyverno docs -o ./reference`. What do the variable and the command do?
+    options:
+      - id: a
+        text: "The variable switches the CLI into experimental mode for good, and `docs` prints the manual on screen only."
+        explanation: "A variable set in front of one command lasts for that command only, and `docs` writes files."
+      - id: b
+        text: "The variable connects the CLI to a cluster, and `docs` downloads the manual from the cluster."
+        explanation: "The variable does not connect to anything, and `docs` builds the pages from the binary itself."
+      - id: c
+        text: "The variable reveals hidden experimental commands for this one run, and `docs` writes one markdown file per command into `./reference`."
+        explanation: "Correct. The help text names `KYVERNO_EXPERIMENTAL` as the switch for experimental commands, and the pages are named `kyverno_<command>.md`."
+      - id: d
+        text: "The variable names the policy to document, and `docs` writes one file for it."
+        explanation: "The variable is a switch, and `docs` documents the commands of the CLI, not a policy."
+    correct_option: c
+    explanation: "`KYVERNO_EXPERIMENTAL=true` reveals experimental commands for that one command line. `kyverno docs -o <folder>` writes a markdown page for each command."
+
+  - id: ats009-010-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Generate a completion script for `bash`, `zsh`, `fish` or `powershell`, and say where each shell reads it."
+    source_readings:
+      - sections/section-010/module-02/course-02-completion-and-the-plugin-name.md
+    prompt: |-
+      You use zsh. You want the tab key to finish `kyverno` commands in every new terminal. What do you do?
+    options:
+      - id: a
+        text: "Save the output of `kyverno completion zsh` as a file named `_kyverno` in a folder on your `fpath`, then open a new shell."
+        explanation: "Correct. zsh looks for completion functions in the folders on its `fpath`, and the script defines the function `_kyverno`."
+      - id: b
+        text: "Save the output of `kyverno completion bash` in `/etc/bash_completion.d/kyverno`."
+        explanation: "That is the bash route. zsh does not read that folder, and the bash script is written for bash."
+      - id: c
+        text: "Run `kyverno completion zsh` and read the output. The shell reads it by itself."
+        explanation: "The command only prints the script. Nothing reads it until you save it or load it."
+      - id: d
+        text: "Run `kyverno completion powershell | Out-String | Invoke-Expression`."
+        explanation: "That line is for PowerShell, not zsh."
+    correct_option: a
+    explanation: "Each shell needs its own script in its own place. For zsh, save the script as `_kyverno` on the `fpath`, or load it with `source <(kyverno completion zsh)`."
+
+  - id: ats009-010-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Make the same binary answer to `kubectl kyverno` by giving it the plugin name."
+    source_readings:
+      - sections/section-010/module-02/course-02-completion-and-the-plugin-name.md
+    prompt: |-
+      The release binary is in `/usr/local/bin/kyverno`. You want `kubectl kyverno version` to work, and Krew is not installed. Which step does it?
+    options:
+      - id: a
+        text: "Rename the file to `kyverno-kubectl`."
+        explanation: "`kubectl` only treats files whose names start with `kubectl-` as plugins."
+      - id: b
+        text: "Run `kubectl apply -f /usr/local/bin/kyverno`."
+        explanation: "`kubectl apply` reads YAML for a cluster. A binary is not a manifest."
+      - id: c
+        text: "Set `KYVERNO_EXPERIMENTAL=true` and run `kubectl kyverno version`."
+        explanation: "The switch reveals experimental commands in the CLI. It does not teach `kubectl` about plugins."
+      - id: d
+        text: "Create a link or copy named `kubectl-kyverno` in a folder on the `PATH`."
+        explanation: "Correct. `kubectl` runs any executable named `kubectl-<name>` on the `PATH` as `kubectl <name>`. `kubectl plugin list` shows the plugins it finds."
+    correct_option: d
+    explanation: "The plugin form is only a file name rule: an executable called `kubectl-kyverno` on the `PATH` becomes `kubectl kyverno`."
+
+  - id: ats009-010-q12
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Scaffold a test file, a values file and a user-info file with `kyverno create`, and name the other `create` helpers."
+    source_readings:
+      - sections/section-010/module-02/course-03-scaffolding-with-create.md
+    prompt: |-
+      You need a test file `scaffold-test.yaml` for `policy.yaml` and `legacy-app.yaml`. It must expect the result `fail` for the Pod `legacy-app` in the namespace `apps`, for the rule `check-team-label` of the policy `require-team-label`. Which command writes it?
+    options:
+      - id: a
+        text: "`kyverno create test -p policy.yaml -r legacy-app.yaml --fail legacy-app,apps,Pod,require-team-label,check-team-label`"
+        explanation: "The five values are in the wrong order, and there is no `-o`, so nothing is written to a file."
+      - id: b
+        text: "`kyverno create test -p policy.yaml -r legacy-app.yaml --fail require-team-label,check-team-label,legacy-app,apps,Pod -o scaffold-test.yaml`"
+        explanation: "Correct. The five values are policy, rule, resource, namespace and kind, and `-o` writes the file to disk."
+      - id: c
+        text: "`kyverno create values -p policy.yaml -r legacy-app.yaml -o scaffold-test.yaml`"
+        explanation: "`create values` writes a values file. It does not accept those flags, and it does not write test results."
+      - id: d
+        text: "`kyverno create exception scaffold-test --policy-rules require-team-label,check-team-label`"
+        explanation: "`create exception` prints a `PolicyException`, an object for a cluster, not a test file."
+    correct_option: b
+    explanation: "`create test` takes `--pass` or `--fail` values in the order policy, rule, resource, namespace, kind. Without `-o`, the file is only printed to the screen."

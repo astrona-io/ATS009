@@ -1,0 +1,55 @@
+metadata:
+  name: "ats-009-lab-009"
+  docs:
+    solution: "solution.md"
+    question: "question.md"
+
+bootstrap:
+  init:
+    - name: "install-kyverno-cli"
+      description: "Installs the kyverno CLI v1.13.2 into /usr/local/bin"
+      type: "file"
+      source: "bootstrap/01-install-kyverno-cli.sh"
+    - name: "setup-toolbox-lab"
+      description: "Writes a policy and two Pod files into /root/toolbox-lab"
+      type: "file"
+      source: "bootstrap/02-setup-toolbox-lab.sh"
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Runs the helper commands the solution describes"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "reference-docs-written"
+      description: "kyverno docs wrote the reference pages for apply and test into /root/toolbox-lab/reference"
+      type: "file"
+      source: "validation/validate-reference-docs.sh"
+      hint: "Run kyverno docs with -o /root/toolbox-lab/reference. Set KYVERNO_EXPERIMENTAL=true in front of the command."
+    - name: "zsh-completion-written"
+      description: "/root/toolbox-lab/_kyverno holds a zsh completion script for kyverno"
+      type: "file"
+      source: "validation/validate-zsh-completion.sh"
+      hint: "kyverno completion zsh prints the script. Redirect it into /root/toolbox-lab/_kyverno."
+    - name: "kubectl-plugin-name"
+      description: "kubectl kyverno version runs and reports 1.13.2"
+      type: "file"
+      source: "validation/validate-kubectl-plugin.sh"
+      hint: "kubectl runs any executable named kubectl-kyverno on the PATH. A link to /usr/local/bin/kyverno with that name is enough."
+    - name: "test-scaffold-written"
+      description: "scaffold-test.yaml lists the policy, both Pods, pass for compliant-app and fail for legacy-app"
+      type: "file"
+      source: "validation/validate-test-scaffold.sh"
+      hint: "Use kyverno create test with -p, two -r flags, --pass, --fail and -o. Each result is policy,rule,resource,namespace,kind."
+    - name: "user-info-written"
+      description: "user-info.yaml names alice@example.com, the group developers and the cluster role admin"
+      type: "file"
+      source: "validation/validate-user-info.sh"
+      hint: "kyverno create user-info takes -u for the user name, -g for the group, -c for the cluster role and -o for the file."
+
+teardown:
+  keepCluster: false

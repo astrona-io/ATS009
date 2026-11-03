@@ -1,0 +1,26 @@
+# The Kyverno CLI Toolbox - playground.
+# A clean training solar system: the Kyverno controller v1.13.2 is running,
+# the kyverno CLI v1.13.2 is installed, and /root/toolbox holds one policy and
+# two Pod files. No task, no grading.
+metadata:
+  name: ats-009-playground-010-02
+  docs:
+    guide: docs/overview.md
+
+bootstrap:
+  init:
+    - name: "install-kyverno"
+      description: "Installs the Kyverno controller v1.13.2 onto the kind cluster"
+      type: "file"
+      source: "bootstrap/01-install-kyverno.sh"
+    - name: "install-kyverno-cli"
+      description: "Installs the kyverno CLI v1.13.2 into /usr/local/bin"
+      type: "file"
+      source: "bootstrap/02-install-kyverno-cli.sh"
+    - name: "setup-scratch-dir"
+      description: "Writes a policy and two Pod files into /root/toolbox"
+      type: "file"
+      source: "bootstrap/03-setup-scratch-dir.sh"
+
+teardown:
+  keepCluster: false

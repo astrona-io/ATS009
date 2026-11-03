@@ -15,13 +15,40 @@ bootstrap:
       type: "file"
       source: "bootstrap/02-install-kyverno-cli.sh"
     - name: "seed-fixture"
-      description: "Writes the context.json fixture used by the capstone exercises"
+      description: "Writes the context.json fixture and an empty answers folder"
       type: "file"
       source: "bootstrap/03-seed-fixture.sh"
 
+# Applied only by `astrona test`: the reference answer files.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Writes the reference answer files"
+      type: "file"
+      source: "solution/apply.sh"
+
 validation:
   scripts:
-    - name: "verify-jp-capstone-answers"
-      description: "Confirms each kyverno jp query capstone answer file holds the correct value"
+    - name: "tag-answer"
+      description: "tag.txt holds the version tag of the image"
       type: "file"
-      source: "validation/validate-completed.sh"
+      source: "validation/validate-tag.sh"
+      hint: "split returns a list. Split the image on ':' and pick the second item with [1]."
+    - name: "version-check-answer"
+      description: "version-check.txt holds the raw semver_compare result"
+      type: "file"
+      source: "validation/validate-version-check.sh"
+      hint: "Pass the tag as the first argument and minVersion as the second. Save the result as it is."
+    - name: "selector-match-answer"
+      description: "selector-match.txt holds the label_match result"
+      type: "file"
+      source: "validation/validate-selector-match.sh"
+      hint: "The selector comes first (requiredSelector) and the labels second (pod.metadata.labels)."
+    - name: "owner-valid-answer"
+      description: "owner-valid.txt holds the regex_match result"
+      type: "file"
+      source: "validation/validate-owner-valid.sh"
+      hint: "regex_match takes the regular expression first and the text second. Mind the shell quoting around the backslash."
+
+teardown:
+  keepCluster: false

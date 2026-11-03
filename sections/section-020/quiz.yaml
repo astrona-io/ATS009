@@ -1,0 +1,391 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the last module summary.
+schema_version: 1
+kind: question_bank
+id: ats009-020
+course_id: ATS009
+exam_code: KCA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-020
+  title: kyverno apply
+questions:
+- id: ats009-020-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Run kyverno apply against local resource files, offline, with
+    no cluster
+  source_readings:
+  - sections/section-020/module-01/course-01-offline-policy-apply.md
+  prompt: You have no `kubeconfig` on this machine and want to test a draft policy
+    against a Pod file. Which command works?
+  options:
+  - id: a
+    text: "`kyverno apply policy.yaml --cluster`"
+    explanation: 'This option is wrong: `--cluster` reads live resources, so it needs
+      a working `kubeconfig`.'
+  - id: b
+    text: "`kyverno apply policy.yaml --resource pod.yaml`"
+    explanation: Correct. With `--resource`, `apply` reads the files from disk and
+      needs no cluster at all.
+  - id: c
+    text: "`kubectl apply -f policy.yaml`"
+    explanation: 'This option is wrong: `kubectl` needs a cluster and would install
+      the policy instead of testing it on a file.'
+  - id: d
+    text: "`kyverno apply pod.yaml --resource policy.yaml`"
+    explanation: 'This option is wrong: the policy comes first and the resource goes
+      behind `--resource`; swapped, the files are read in the wrong roles.'
+  correct_option: b
+  explanation: Correct. With `--resource`, `apply` reads the files from disk and needs
+    no cluster at all.
+- id: ats009-020-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read the pass, fail, warn, error and skip summary and say what
+    each kind of result means
+  source_readings:
+  - sections/section-020/module-01/course-01-offline-policy-apply.md
+  prompt: 'A run ends with `pass: 0, fail: 0, warn: 0, error: 1, skip: 0`. What does
+    `error` tell you that `fail` does not?'
+  options:
+  - id: a
+    text: The Pod broke the rule and would be rejected.
+    explanation: 'This option is wrong: that is `fail`. A broken rule is a verdict,
+      not an error.'
+  - id: b
+    text: The rule was excused by an exception.
+    explanation: 'This option is wrong: an excused resource is counted as `skip`.'
+  - id: c
+    text: The policy passed but its API version is old.
+    explanation: 'This option is wrong: a deprecation notice is not a result kind.'
+  - id: d
+    text: The CLI could not finish the check, for example because a variable had no
+      value.
+    explanation: Correct. `error` means no verdict could be reached. A typical cause
+      offline is a `configMap` or `apiCall` lookup with nobody to answer.
+  correct_option: d
+  explanation: Correct. `error` means no verdict could be reached. A typical cause
+    offline is a `configMap` or `apiCall` lookup with nobody to answer.
+- id: ats009-020-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use the exit code of kyverno apply to stop a script or a pipeline
+    when a policy fails
+  source_readings:
+  - sections/section-020/module-01/course-01-offline-policy-apply.md
+  - sections/section-020/module-03/course-02-warnings-and-exit-codes.md
+  prompt: A pipeline step runs `kyverno apply policy.yaml -r pod.yaml ; echo done`
+    and is always green, even when the Pod fails. Why?
+  options:
+  - id: a
+    text: The step takes the exit code of the last command, `echo`, which is `0`.
+    explanation: Correct. Let `kyverno apply` be the last command or chain with `&&`,
+      so its non-zero exit code stops the step.
+  - id: b
+    text: "`kyverno apply` always exits `0` and only prints failures."
+    explanation: 'This option is wrong: a `fail` or `error` makes the run exit `1`.'
+  - id: c
+    text: Pipelines ignore exit codes below `10`.
+    explanation: 'This option is invented: any non-zero code stops a normal step.'
+  - id: d
+    text: "`echo` clears the failure from the policy report."
+    explanation: 'This option is wrong: `echo` has no link to the CLI result.'
+  correct_option: a
+  explanation: Correct. Let `kyverno apply` be the last command or chain with `&&`,
+    so its non-zero exit code stops the step.
+- id: ats009-020-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Supply the value of a policy context variable with a values
+    file or inline with --set
+  source_readings:
+  - sections/section-020/module-01/course-02-supplying-variables-with-a-values-file.md
+  prompt: A policy reads `{{ approvedRegistry.data.registry }}` from a `configMap`
+    context entry. Offline, the run reports `error`. What is the right fix?
+  options:
+  - id: a
+    text: Add `--cluster` and a second policy.
+    explanation: 'This option is wrong: it changes the mode instead of giving the
+      missing value, and it needs a cluster.'
+  - id: b
+    text: Delete the `context` block from the policy.
+    explanation: 'This option is wrong: the rule would then refer to a variable that
+      is not defined at all.'
+  - id: c
+    text: Pass the answer with `-f values.yaml` or `--set approvedRegistry.data.registry=registry.internal/`.
+    explanation: Correct. For a `configMap` lookup, the key is the full path the rule
+      reads, and the values file or `--set` supplies it.
+  - id: d
+    text: Rename the variable to `registry`.
+    explanation: 'This option is wrong: renaming does not give the CLI a value to
+      use.'
+  correct_option: c
+  explanation: Correct. For a `configMap` lookup, the key is the full path the rule
+    reads, and the values file or `--set` supplies it.
+- id: ats009-020-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Run apply against a live cluster with --cluster, limited to
+    one namespace with -n
+  source_readings:
+  - sections/section-020/module-01/course-03-applying-against-a-live-cluster-and-policy-reports.md
+  prompt: You run `kyverno apply policy.yaml --cluster -n orders`. What happens to
+    the Pods in `orders`?
+  options:
+  - id: a
+    text: They are read and reported on. Nothing in the cluster changes.
+    explanation: Correct. `--cluster` is read-only. Nothing is admitted, changed or
+      rejected until you apply the policy with `kubectl`.
+  - id: b
+    text: Pods without the label are deleted.
+    explanation: 'This option is wrong: `apply` never deletes anything.'
+  - id: c
+    text: The policy is installed in the cluster.
+    explanation: 'This option is wrong: installing a policy needs `kubectl apply`.'
+  - id: d
+    text: Only new Pods are checked.
+    explanation: 'This option is wrong: `--cluster` reads the resources that already
+      exist.'
+  correct_option: a
+  explanation: Correct. `--cluster` is read-only. Nothing is admitted, changed or
+    rejected until you apply the policy with `kubectl`.
+- id: ats009-020-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Generate a policy report with --policy-report instead of the
+    plain-text summary
+  source_readings:
+  - sections/section-020/module-01/course-03-applying-against-a-live-cluster-and-policy-reports.md
+  - sections/section-020/module-03/course-03-reading-the-results.md
+  prompt: You need every result, passing ones included, as structured data you can
+    save. Which flag does that?
+  options:
+  - id: a
+    text: "`--table`"
+    explanation: 'This option is wrong: `--table` is a text table for people, not
+      a report resource.'
+  - id: b
+    text: "`--audit-warn`"
+    explanation: 'This option is wrong: it changes how Audit violations are counted,
+      not the output form.'
+  - id: c
+    text: "`--continue-on-fail`"
+    explanation: 'This option is wrong: it controls what happens after a failure,
+      not the output form.'
+  - id: d
+    text: "`-p` (`--policy-report`), redirected to a file."
+    explanation: Correct. It prints a report resource with one result per rule and
+      resource. Redirect it to keep it.
+  correct_option: d
+  explanation: Correct. It prints a report resource with one result per rule and resource.
+    Redirect it to keep it.
+- id: ats009-020-q07
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Run a mutate rule with kyverno apply and save the patched resource
+    with -o
+  source_readings:
+  - sections/section-020/module-02/course-01-mutating-resources-and-saving-the-result.md
+  prompt: You ran a mutate rule with `-o patched.yaml`. The new label is in `patched.yaml`
+    but not in the source Pod file. Is that expected?
+  options:
+  - id: a
+    text: No. The command failed and you should run it again.
+    explanation: 'This option is wrong: a missing label in the source is the normal
+      result.'
+  - id: b
+    text: No. `-o` should have overwritten the source file.
+    explanation: 'This option is wrong: `-o` names a different file.'
+  - id: c
+    text: Yes. `apply` only reads the source and writes the result to the `-o` file.
+    explanation: Correct. The source file is never edited.
+  - id: d
+    text: Yes. But only because the Pod already had a label.
+    explanation: 'This option is wrong: the source stays as it was whether or not
+      it had labels.'
+  correct_option: c
+  explanation: Correct. The source file is never edited.
+- id: ats009-020-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why apply never edits the source file and how the add
+    anchor and -i differ from -o
+  source_readings:
+  - sections/section-020/module-02/course-01-mutating-resources-and-saving-the-result.md
+  prompt: 'A Pod already has `team: checkout`. A mutate rule says `+(team): unassigned`.
+    What is the label in the patched output?'
+  options:
+  - id: a
+    text: "`team: checkout`"
+    explanation: Correct. The `+()` add anchor only adds the key when it is missing.
+  - id: b
+    text: "`team: unassigned`"
+    explanation: 'This option is wrong: that would need a plain `team: unassigned`
+      without the anchor.'
+  - id: c
+    text: Both labels, in two copies.
+    explanation: 'This option is wrong: a label key holds one value.'
+  - id: d
+    text: The run fails with `error`.
+    explanation: 'This option is wrong: a rule that finds nothing to change is not
+      an error.'
+  correct_option: a
+  explanation: Correct. The `+()` add anchor only adds the key when it is missing.
+- id: ats009-020-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Run a generate rule with kyverno apply and read the resource
+    it builds from a trigger
+  source_readings:
+  - sections/section-020/module-02/course-02-generating-resources-from-a-trigger.md
+  prompt: You run a generate rule on `mars.yaml` (a `Namespace`) with `-o`. Where
+    is the generated `ConfigMap`?
+  options:
+  - id: a
+    text: In the cluster, in the namespace `mars`.
+    explanation: 'This option is wrong: `apply` creates nothing in a cluster.'
+  - id: b
+    text: In `mars.yaml`, added to the file.
+    explanation: 'This option is wrong: the source file is not edited.'
+  - id: c
+    text: Nowhere. Offline apply cannot run generate rules.
+    explanation: 'This option is wrong: data-based generate rules run fine offline.'
+  - id: d
+    text: In the `-o` file. You create it yourself if you want it live.
+    explanation: Correct. `apply` writes the result to the file and nothing else.
+  correct_option: d
+  explanation: Correct. `apply` writes the result to the file and nothing else.
+- id: ats009-020-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Pass the identity of the requester with a user info file
+  source_readings:
+  - sections/section-020/module-02/course-03-request-data-user-info-operation-and-namespace-labels.md
+  prompt: A policy lets only the cluster role `flight-director` through, and your
+    offline run fails. What do you add to the command?
+  options:
+  - id: a
+    text: "`--set request.userInfo=flight-director`"
+    explanation: 'This option is wrong: the roles come from a user info file, not
+      from a single flag value.'
+  - id: b
+    text: "`-u director.yaml`, a user info file with `flight-director` under `clusterRoles`."
+    explanation: Correct. `-u` gives the CLI a made-up requester so `match` and `exclude`
+      blocks with roles can be checked.
+  - id: c
+    text: "`--cluster`"
+    explanation: 'This option is wrong: this reads resources and does not add a requester.'
+  - id: d
+    text: 'An edit to the resource: add the role as a label.'
+    explanation: 'This option is wrong: the requester is not part of the resource.'
+  correct_option: b
+  explanation: Correct. `-u` gives the CLI a made-up requester so `match` and `exclude`
+    blocks with roles can be checked.
+- id: ats009-020-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Supply request data such as request.operation and namespace
+    labels
+  source_readings:
+  - sections/section-020/module-02/course-03-request-data-user-info-operation-and-namespace-labels.md
+  prompt: A rule only reacts to `UPDATE` requests. Offline, how do you test it?
+  options:
+  - id: a
+    text: You cannot. Offline runs only know `CREATE`.
+    explanation: 'This option is wrong: the operation can be set.'
+  - id: b
+    text: Rename the Pod file to `update.yaml`.
+    explanation: 'This option is wrong: file names carry no request data.'
+  - id: c
+    text: Use `--set request.operation=UPDATE`, or put it in a values file.
+    explanation: Correct. Request data not in the resource comes from `--set` or a
+      values file. Namespace labels use `namespaceSelector` in the values file.
+  - id: d
+    text: Add `--cluster -n apps`.
+    explanation: 'This option is wrong: that reads live resources and does not set
+      the operation.'
+  correct_option: c
+  explanation: Correct. Request data not in the resource comes from `--set` or a values
+    file. Namespace labels use `namespaceSelector` in the values file.
+- id: ats009-020-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Write a PolicyException and pass it to kyverno apply with -e
+  source_readings:
+  - sections/section-020/module-03/course-01-exceptions-with-policy-exceptions.md
+  prompt: An Enforce policy fails `legacy-app`. You write a correct `PolicyException`
+    for it and pass it with `-e`. What is `legacy-app` in the summary?
+  options:
+  - id: a
+    text: A `skip`. It is excused from the rule.
+    explanation: Correct. An excused resource is `skip`, not `pass`. It was not checked
+      and found good.
+  - id: b
+    text: A `pass`.
+    explanation: 'This option is wrong: the rule was not run on it.'
+  - id: c
+    text: A `warn`.
+    explanation: 'This option is wrong: a warning is a different outcome.'
+  - id: d
+    text: Still a `fail`, since `-e` only changes the report.
+    explanation: 'This option is wrong: the exception changes the result of the run
+      itself.'
+  correct_option: a
+  explanation: Correct. An excused resource is `skip`, not `pass`. It was not checked
+    and found good.
+- id: ats009-020-q13
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Turn Audit failures into warnings and choose the exit code for
+    warnings
+  source_readings:
+  - sections/section-020/module-03/course-02-warnings-and-exit-codes.md
+  prompt: An Audit policy finds one violation. Which flags give the exit code `3`?
+  options:
+  - id: a
+    text: "`--warn-exit-code 3` only"
+    explanation: 'This option is wrong: with no `--audit-warn`, the violation stays
+      a failure and the code is `1`.'
+  - id: b
+    text: "`--audit-warn --warn-exit-code 3`"
+    explanation: Correct. `--audit-warn` makes the violation a warning, and `--warn-exit-code`
+      gives warnings their number.
+  - id: c
+    text: "`--audit-warn` only"
+    explanation: 'This option is wrong: warnings then exit `0`.'
+  - id: d
+    text: "`--warn-no-pass` only"
+    explanation: 'This option is wrong: it works together with `--warn-exit-code`
+      and does not set a number by itself.'
+  correct_option: b
+  explanation: Correct. `--audit-warn` makes the violation a warning, and `--warn-exit-code`
+    gives warnings their number.
+- id: ats009-020-q14
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read results with --table and --detailed-results and explain
+    what --continue-on-fail changes
+  source_readings:
+  - sections/section-020/module-03/course-03-reading-the-results.md
+  prompt: Which statement about the output flags is right?
+  options:
+  - id: a
+    text: "`--table` also prints the summary line."
+    explanation: 'This option is wrong: the table replaces the summary line.'
+  - id: b
+    text: "`--detailed-results` changes the exit code."
+    explanation: 'This option is wrong: it only changes what is printed.'
+  - id: c
+    text: "`--continue-on-fail` makes every failure exit `0`."
+    explanation: 'This option is wrong: the exit code still reports the failures.'
+  - id: d
+    text: "`--table` lists one row per resource, and `--continue-on-fail` carries
+      on with the next resource after a failure."
+    explanation: Correct. One flag is about the form of the output, the other about
+      whether the run carries on.
+  correct_option: d
+  explanation: Correct. One flag is about the form of the output, the other about
+    whether the run carries on.

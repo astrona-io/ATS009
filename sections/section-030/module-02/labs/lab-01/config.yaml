@@ -1,0 +1,56 @@
+metadata:
+  name: "ats-009-lab-012"
+  docs:
+    solution: "solution.md"
+    question: "question.md"
+
+bootstrap:
+  init:
+    - name: "install-kyverno"
+      description: "Installs Kyverno onto the kind cluster"
+      type: "file"
+      source: "bootstrap/01-install-kyverno.sh"
+    - name: "install-kyverno-cli"
+      description: "Installs the kyverno CLI binary"
+      type: "file"
+      source: "bootstrap/02-install-kyverno-cli.sh"
+    - name: "seed-fixtures"
+      description: "Writes the mutate and generate policies and their input resources to ~/kyverno-cli-lab (no test manifest)"
+      type: "file"
+      source: "bootstrap/03-seed-fixtures.sh"
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Writes the expected files and the reference kyverno-test.yaml"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "manifest-covers-all"
+      description: "kyverno-test.yaml covers both policies, all three resources, a patched file, a generated file and a skip"
+      type: "file"
+      source: "validation/validate-manifest-covers-all.sh"
+      hint: "One claim for web-pod with patchedResources, one skip claim for batch-pod, one claim for team-a with generatedResource."
+    - name: "suite-passes"
+      description: "kyverno test . exits 0 and runs at least three tests"
+      type: "file"
+      source: "validation/validate-suite-passes.sh"
+      hint: "Run kyverno test . in ~/kyverno-cli-lab and read the REASON column. Resource diff means the expected file differs from the real result."
+    - name: "patched-claim-is-real"
+      description: "The suite fails when the mutate output changes"
+      type: "file"
+      source: "validation/validate-patched-claim-is-real.sh"
+      hint: "web-pod needs patchedResources that point to a file with the whole patched Pod, including managed-by: kyverno."
+    - name: "generated-claim-is-real"
+      description: "The suite fails when the generated resource changes"
+      type: "file"
+      source: "validation/validate-generated-claim-is-real.sh"
+      hint: "team-a needs generatedResource that points to the NetworkPolicy default-deny in namespace team-a."
+    - name: "skip-claim-is-real"
+      description: "The suite fails when batch-pod stops being skipped"
+      type: "file"
+      source: "validation/validate-skip-claim-is-real.sh"
+      hint: "batch-pod needs its own claim with result skip for set-managed-by."

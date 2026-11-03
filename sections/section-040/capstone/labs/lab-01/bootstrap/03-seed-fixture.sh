@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
+rm -rf "${HOME}/jp-capstone/answers"
 mkdir -p "${HOME}/jp-capstone/answers"
 
 cat > "${HOME}/jp-capstone/context.json" <<'EOF'

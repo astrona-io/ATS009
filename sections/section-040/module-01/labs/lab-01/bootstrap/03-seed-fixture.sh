@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
+rm -rf "${HOME}/jp-lab/answers"
 mkdir -p "${HOME}/jp-lab/answers"
 
 cat > "${HOME}/jp-lab/pod.json" <<'EOF'

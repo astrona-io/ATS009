@@ -19,9 +19,33 @@ bootstrap:
       type: "file"
       source: "bootstrap/03-seed-test-suite.sh"
 
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Writes the reference kyverno-test.yaml"
+      type: "file"
+      source: "solution/apply.sh"
+
 validation:
   scripts:
-    - name: "verify-kyverno-test-suite"
-      description: "Confirms kyverno-test.yaml truthfully asserts pass for good-pod and fail for bad-pod"
+    - name: "manifest-names-both-pods"
+      description: "kyverno-test.yaml still makes a claim about good-pod and bad-pod"
       type: "file"
-      source: "validation/validate-completed.sh"
+      source: "validation/validate-manifest-names-both-pods.sh"
+      hint: "Keep both Pods in the results list. Fix the expected result; do not delete bad-pod."
+    - name: "suite-passes"
+      description: "kyverno test . exits 0 and runs at least two tests"
+      type: "file"
+      source: "validation/validate-suite-passes.sh"
+      hint: "Run kyverno test . in ~/kyverno-cli-lab and read the REASON column. One entry per Pod, each with its real result."
+    - name: "good-pod-claim-is-real"
+      description: "The suite fails when good-pod stops passing the rule"
+      type: "file"
+      source: "validation/validate-good-pod-claim-is-real.sh"
+      hint: "good-pod must have its own claim: result pass for check-runAsNonRoot."
+    - name: "bad-pod-claim-is-real"
+      description: "The suite fails when bad-pod stops failing the rule"
+      type: "file"
+      source: "validation/validate-bad-pod-claim-is-real.sh"
+      hint: "bad-pod must have its own claim: result fail for check-runAsNonRoot."

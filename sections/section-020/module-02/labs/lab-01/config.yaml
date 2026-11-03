@@ -1,0 +1,50 @@
+metadata:
+  name: "ats-009-lab-010"
+  docs:
+    solution: "solution.md"
+    question: "question.md"
+
+bootstrap:
+  init:
+    - name: "install-kyverno-cli"
+      description: "Installs the standalone kyverno CLI binary"
+      type: "file"
+      source: "bootstrap/01-install-kyverno-cli.sh"
+    - name: "setup-mutate-lab"
+      description: "Creates the apps namespace and the mutate, generate and user info fixtures in /root/mutate-lab"
+      type: "file"
+      source: "bootstrap/02-setup-mutate-lab.sh"
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Runs the mutate and generate applies, writes the user info file and applies the mutated Pod"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "mutated-output"
+      description: "scout-mutated.yaml holds the patched Pod and scout.yaml is unchanged"
+      type: "file"
+      source: "validation/validate-mutated-output.sh"
+      hint: "Run kyverno apply with mutate-policy.yaml and --resource scout.yaml, and add -o /root/mutate-lab/scout-mutated.yaml. Never redirect the output over scout.yaml."
+    - name: "generated-output"
+      description: "welcome-generated.yaml holds the ConfigMap welcome for the namespace venus"
+      type: "file"
+      source: "validation/validate-generated-output.sh"
+      hint: "Run kyverno apply with generate-policy.yaml and --resource venus.yaml (the Namespace is the trigger), and add -o /root/mutate-lab/welcome-generated.yaml."
+    - name: "user-info"
+      description: "A user info file makes bridge-access pass for scout"
+      type: "file"
+      source: "validation/validate-user-info.sh"
+      hint: "Save /root/mutate-lab/bridge-officer.yaml with apiVersion cli.kyverno.io/v1alpha1, kind UserInfo and the role bridge-officer under clusterRoles, then pass it with -u."
+    - name: "live-pod"
+      description: "The mutated Pod scout runs in apps with tier=standard"
+      type: "file"
+      source: "validation/validate-live-pod.sh"
+      hint: "Apply the file you wrote with -o, not the original scout.yaml: kubectl apply -f /root/mutate-lab/scout-mutated.yaml."
+
+teardown:
+  keepCluster: false

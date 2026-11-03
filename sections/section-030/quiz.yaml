@@ -1,0 +1,374 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the module summaries.
+schema_version: 1
+kind: question_bank
+id: ats009-030
+course_id: ATS009
+exam_code: KCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-030
+  title: "kyverno test"
+questions:
+  - id: ats009-030-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Write a kyverno-test.yaml manifest that lists policies, resources and expected results."
+    source_readings:
+      - sections/section-030/module-01/course-01-test-manifest-anatomy.md
+    prompt: |-
+      A results entry in a `kyverno-test.yaml` must name the resource it is about. Which value goes into its `resources` list?
+    options:
+      - id: a
+        text: "`good-pod.yaml`"
+        explanation: "That is the file path. File paths belong in the top-level `resources` list, not inside a `results` entry."
+      - id: b
+        text: "`good-pod`"
+        explanation: "Correct. Inside `results`, `resources` takes the `metadata.name` of the resource."
+      - id: c
+        text: "`v1/Pod/good-pod`"
+        explanation: "This is a long form that some table outputs show. The manifest wants the plain name."
+      - id: d
+        text: "`Pod`"
+        explanation: "That is the kind, which has its own `kind` field in the entry."
+    correct_option: b
+    explanation: "Inside a `results` entry, `resources` lists resource names, and `kind` is a separate field. File paths belong in the top-level `resources` list."
+
+  - id: ats009-030-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Assert pass, fail, skip and warn correctly, and know when resources can share one results entry."
+    source_readings:
+      - sections/section-030/module-01/course-01-test-manifest-anatomy.md
+    prompt: |-
+      One `results` entry lists `good-pod` and `bad-pod` with `result: pass`. `bad-pod` really fails the rule. What does `kyverno test` report?
+    options:
+      - id: a
+        text: "A 1 of 2 partial pass for the entry"
+        explanation: "The test has no partial credit. An entry is one claim."
+      - id: b
+        text: "Nothing, because grouped resources are only checked for existence"
+        explanation: "Every listed resource is checked against the claim."
+      - id: c
+        text: "A failure for `bad-pod` with the reason `Want pass, got fail`, and a non-zero exit code"
+        explanation: "Correct. One resource that disagrees with the claim fails, and the exit code is not `0`."
+      - id: d
+        text: "A pass, because the average verdict is pass"
+        explanation: "The test does not average verdicts."
+    correct_option: c
+    explanation: "Resources may share an entry only when they really share the verdict. One disagreeing resource makes the run fail."
+
+  - id: ats009-030-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read the output and the exit code of kyverno test."
+    source_readings:
+      - sections/section-030/module-01/course-01-test-manifest-anatomy.md
+      - sections/section-030/module-01/course-03-running-and-interpreting-test-results.md
+    prompt: |-
+      The table shows `Pass` next to a Pod that breaks the rule. What does that mean?
+    options:
+      - id: a
+        text: "The claim in the manifest was `fail`, and the rule really failed the Pod, so the claim matched."
+        explanation: "Correct. The result column says whether the claim matched the real verdict, not whether the Pod is good."
+      - id: b
+        text: "The Pod passed the policy, and the test has a bug."
+        explanation: "A Pod that breaks the rule does not pass it. The column is about the claim."
+      - id: c
+        text: "The policy is turned off for that Pod."
+        explanation: "A turned-off rule would give `skip`, not a matched claim."
+      - id: d
+        text: "The test did not run for that Pod."
+        explanation: "A row in the table means that the case ran."
+    correct_option: a
+    explanation: "In `kyverno test`, `Pass` means that the claim matched the real result."
+
+  - id: ats009-030-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name the rule correctly in a results entry for autogen rules, and test foreach and deny rules."
+    source_readings:
+      - sections/section-030/module-01/course-02-autogen-names-foreach-and-deny.md
+    prompt: |-
+      A policy has the rule `check-runAsNonRoot` for Pods. You test a Deployment named `web` against it. Which `rule` and `kind` go into the `results` entry?
+    options:
+      - id: a
+        text: "`rule: check-runAsNonRoot` and `kind: Pod`"
+        explanation: "The Deployment is not reported under the Pod rule name, and the kind is the kind of the resource."
+      - id: b
+        text: "`rule: check-runAsNonRoot` and `kind: Deployment`"
+        explanation: "The kind is right, but Kyverno reports the copy of the rule under another name."
+      - id: c
+        text: "`rule: autogen-check-runAsNonRoot` and `kind: Pod`"
+        explanation: "The rule name is right, but the resource is a Deployment."
+      - id: d
+        text: "`rule: autogen-check-runAsNonRoot` and `kind: Deployment`"
+        explanation: "Correct. Kyverno writes a copy of the rule for Deployments with the prefix `autogen-`, and the kind is the kind of the tested resource."
+    correct_option: d
+    explanation: "The name in `results` must be the name Kyverno reports: `autogen-` plus the original rule name for a Deployment."
+
+  - id: ats009-030-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name the rule correctly in a results entry for autogen rules, and test foreach and deny rules."
+    source_readings:
+      - sections/section-030/module-01/course-02-autogen-names-foreach-and-deny.md
+    prompt: |-
+      A `foreach` rule with a `deny` block checks every container of a Pod. One of three containers is privileged. How many verdicts does the test give for that Pod, and what is it?
+    options:
+      - id: a
+        text: "Three, one for each container: one `fail` and two `pass`"
+        explanation: "The test gives one verdict for each resource, not for each list item."
+      - id: b
+        text: "One for the Pod: `fail`"
+        explanation: "Correct. One item that trips the `deny` condition makes the whole resource `fail`."
+      - id: c
+        text: "One for the Pod: `pass`, because most containers are fine"
+        explanation: "A single bad item is enough to fail the resource."
+      - id: d
+        text: "None, because `foreach` rules cannot be tested"
+        explanation: "They can, with a normal `results` entry."
+    correct_option: b
+    explanation: "A foreach rule gives one verdict for each resource. One bad item fails the resource."
+
+  - id: ats009-030-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Run a test suite from a local folder or a remote Git repository, and narrow a run with a selector."
+    source_readings:
+      - sections/section-030/module-01/course-03-running-and-interpreting-test-results.md
+    prompt: |-
+      You run a suite from a feature branch on GitHub with `kyverno test <url>` and no other flag. Which branch is tested?
+    options:
+      - id: a
+        text: "The branch in your last commit"
+        explanation: "The command does not know your local branches."
+      - id: b
+        text: "The branch that was pushed last"
+        explanation: "The CLI does not look at push times."
+      - id: c
+        text: "The default branch of the repository"
+        explanation: "Correct. Pass `--git-branch` to test another branch."
+      - id: d
+        text: "All branches, one after another"
+        explanation: "The command tests one branch."
+    correct_option: c
+    explanation: "Without `--git-branch`, the CLI uses the default branch of the repository."
+
+  - id: ats009-030-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why a suite that always passes proves nothing, and decide whether a pipeline can rely on kyverno test."
+    source_readings:
+      - sections/section-030/module-01/course-03-running-and-interpreting-test-results.md
+    prompt: |-
+      A pipeline runs `kyverno test .` on CLI `1.13.2`. Someone deletes every `kyverno-test.yaml` file. What does the pipeline show, and what should you add?
+    options:
+      - id: a
+        text: "It shows green, because the CLI prints `No test yamls available` and exits `0`. Add a check that test manifests exist."
+        explanation: "Correct. On `1.13.2`, an empty folder is not an error, so the pipeline must check for the manifests itself."
+      - id: b
+        text: "It shows red, because a missing suite is an error."
+        explanation: "Newer CLIs can be told to fail on this, but `1.13.2` exits `0`."
+      - id: c
+        text: "It shows red, because there are no results to compare."
+        explanation: "With no results to compare, nothing disagrees. The exit code stays `0`."
+      - id: d
+        text: "It shows green, and nothing needs to change."
+        explanation: "This is the hole in the gate. Add a check that test manifests exist."
+    correct_option: a
+    explanation: "An empty suite exits `0` on `1.13.2`, so the pipeline must check that manifests exist."
+
+  - id: ats009-030-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Write a results entry for a mutate rule with patchedResources."
+    source_readings:
+      - sections/section-030/module-02/course-01-testing-mutate-rules.md
+    prompt: |-
+      A mutate rule adds a label to `web-pod`. Which fields make the `results` entry check the changed Pod?
+    options:
+      - id: a
+        text: "`result: pass` only"
+        explanation: "That only says that the rule ran. It does not check what the rule changed."
+      - id: b
+        text: "`result: fail` and `patchedResources`"
+        explanation: "A rule that did its work is `pass`, not `fail`."
+      - id: c
+        text: "`generatedResource` and `result: pass`"
+        explanation: "That field is for generate rules."
+      - id: d
+        text: "`result: pass` and `patchedResources` that point to a file with the whole patched Pod"
+        explanation: "Correct. The run compares the real patched resource with that file."
+    correct_option: d
+    explanation: "A mutate claim is `pass` plus `patchedResources`, a file with the whole resource as it must look after the rule."
+
+  - id: ats009-030-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the Resource diff reason and tell which side is wrong."
+    source_readings:
+      - sections/section-030/module-02/course-01-testing-mutate-rules.md
+      - sections/section-030/module-02/course-02-testing-generate-rules.md
+    prompt: |-
+      A test fails with the reason `Resource diff`. What does that tell you for sure?
+    options:
+      - id: a
+        text: "The policy is broken."
+        explanation: "The policy may be fine. The expected file may be wrong."
+      - id: b
+        text: "The resource the rule produced is not equal to the expected file."
+        explanation: "Correct. It does not say which side is right, so compare the policy and the file."
+      - id: c
+        text: "The input resource file is not valid YAML."
+        explanation: "A broken input file gives a load error, not a diff."
+      - id: d
+        text: "The rule did not match the resource."
+        explanation: "A rule that does not match gives `skip`."
+    correct_option: b
+    explanation: "A `Resource diff` says that the produced and expected resources differ. Decide which side is wrong before you fix it."
+
+  - id: ats009-030-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Test that a mutate rule leaves a resource alone with skip."
+    source_readings:
+      - sections/section-030/module-02/course-01-testing-mutate-rules.md
+    prompt: |-
+      A mutate rule only matches Pods labelled `tier: web`. `batch-pod` is labelled `tier: batch`. Which claim is right for `batch-pod`?
+    options:
+      - id: a
+        text: "`result: pass`"
+        explanation: "The rule does not apply, so it did no work to pass."
+      - id: b
+        text: "`result: fail`"
+        explanation: "Nothing was turned away."
+      - id: c
+        text: "`result: skip`"
+        explanation: "Correct. The rule does not apply to that Pod. The claim breaks if the Pod starts to match."
+      - id: d
+        text: "No entry, because skipped resources cannot be tested"
+        explanation: "A skip is a claim like any other, and it is worth testing."
+    correct_option: c
+    explanation: "A resource that the rule does not match gets `skip`."
+
+  - id: ats009-030-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Write a results entry for a generate rule and a clone rule."
+    source_readings:
+      - sections/section-030/module-02/course-02-testing-generate-rules.md
+    prompt: |-
+      A generate rule builds a `NetworkPolicy` for every new Namespace. In the `results` entry for namespace `team-a`, what do `resources` and `kind` name?
+    options:
+      - id: a
+        text: "The trigger: `team-a` and `Namespace`. The NetworkPolicy goes into the `generatedResource` file."
+        explanation: "Correct. The trigger is the input, and the generated resource is the output file."
+      - id: b
+        text: "The generated NetworkPolicy and its kind"
+        explanation: "The generated resource belongs in the `generatedResource` file."
+      - id: c
+        text: "Both the Namespace and the NetworkPolicy"
+        explanation: "The entry names the trigger only."
+      - id: d
+        text: "Nothing. A generate entry has no `resources`"
+        explanation: "Every entry names the resources it is about."
+    correct_option: a
+    explanation: "For generate rules, `resources` and `kind` name the trigger. The output is the `generatedResource` file."
+
+  - id: ats009-030-q12
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Supply policy variables and the requester to a test with a values file and a user info file."
+    source_readings:
+      - sections/section-030/module-03/course-01-variables-and-user-info.md
+    prompt: |-
+      A policy reads `{{ registryConfig.data.prefix }}` from a `ConfigMap` context entry. You run the test without a `variables` line. What do you see?
+    options:
+      - id: a
+        text: "The rule passes, because the variable is empty"
+        explanation: "An empty variable does not make a rule pass."
+      - id: b
+        text: "The rule is skipped"
+        explanation: "A missing variable is not a reason to skip."
+      - id: c
+        text: "The CLI asks you for the value"
+        explanation: "The CLI does not ask. It runs without prompts."
+      - id: d
+        text: "An error for the affected rules, because the placeholder cannot be filled"
+        explanation: "Correct. Supply the value with a values file named in the `variables` field."
+    correct_option: d
+    explanation: "An offline test cannot read a `ConfigMap`. A values file in the `variables` field supplies the value, or the rule reports an error."
+
+  - id: ats009-030-q13
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Test a PolicyException and tell the reasons for skip apart."
+    source_readings:
+      - sections/section-030/module-03/course-02-exceptions-and-skip-results.md
+    prompt: |-
+      `legacy-pod` and `bad-pod` both break a rule. A `PolicyException` names only `legacy-pod`, and the manifest lists it under `exceptions`. Which claims are right?
+    options:
+      - id: a
+        text: "`legacy-pod`: `fail`, `bad-pod`: `fail`"
+        explanation: "The exception frees `legacy-pod`, so it is not judged by the rule."
+      - id: b
+        text: "`legacy-pod`: `skip`, `bad-pod`: `fail`"
+        explanation: "Correct. The waiver frees one Pod. The second claim proves that the waiver is narrow."
+      - id: c
+        text: "`legacy-pod`: `pass`, `bad-pod`: `fail`"
+        explanation: "An excepted resource is skipped, not passed."
+      - id: d
+        text: "`legacy-pod`: `skip`, `bad-pod`: `skip`"
+        explanation: "The exception names only `legacy-pod`, so `bad-pod` is still judged."
+    correct_option: b
+    explanation: "An excepted resource is `skip`. Always add a resource without a waiver and claim `fail`."
+
+  - id: ats009-030-q14
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Organise many test manifests in folders and run them all with one command."
+    source_readings:
+      - sections/section-030/module-03/course-03-organising-large-test-suites.md
+    prompt: |-
+      A manifest sits in `tests/registry/kyverno-test.yaml`. The policy is `policies/restrict-registry.yaml` at the top of the lab folder. How does the manifest point to it?
+    options:
+      - id: a
+        text: "`policies/restrict-registry.yaml`"
+        explanation: "Paths are relative to the folder of the manifest, not to the top folder."
+      - id: b
+        text: "`/policies/restrict-registry.yaml`"
+        explanation: "A leading slash means the root of the machine, not the lab folder."
+      - id: c
+        text: "`../../policies/restrict-registry.yaml`"
+        explanation: "Correct. The manifest is two folders below the top, so the path climbs two folders."
+      - id: d
+        text: "`tests/policies/restrict-registry.yaml`"
+        explanation: "That folder does not exist. The policy is shared at the top."
+    correct_option: c
+    explanation: "Paths in a manifest are relative to the manifest's own folder. `kyverno test .` finds every `kyverno-test.yaml` below the folder."
+
+  - id: ats009-030-q15
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Supply policy variables and the requester to a test with a values file and a user info file."
+    source_readings:
+      - sections/section-030/module-03/course-01-variables-and-user-info.md
+    prompt: |-
+      A rule blocks a Pod in the platform tier unless the requester has the cluster role `cluster-admin`. You want one test that shows the rule lets an administrator through and another that shows it turns a developer away. How do you give the test the requester?
+    options:
+      - id: a
+        text: "Add a `userinfo` line to each manifest that points at a user info file with the roles, and keep one manifest for each requester."
+        explanation: "Correct. The user info file is the requester's badge. A manifest uses one badge, so you write one manifest for each requester."
+      - id: b
+        text: "Put the roles in the Pod's labels."
+        explanation: "Labels describe the ship, not who asked for it. The rule reads the requester, not the labels."
+      - id: c
+        text: "Run `kyverno test` as a different operating system user."
+        explanation: "The CLI does not read your system user name. The requester comes from the user info file."
+      - id: d
+        text: "List the roles in the `results` entry."
+        explanation: "A `results` entry states the expected verdict. It cannot define who sent the request."
+    correct_option: a
+    explanation: "The `userinfo` field names a file with the requester's user name and roles. A manifest can name one file, so each requester needs its own manifest."

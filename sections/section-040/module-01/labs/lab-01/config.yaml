@@ -15,13 +15,45 @@ bootstrap:
       type: "file"
       source: "bootstrap/02-install-kyverno-cli.sh"
     - name: "seed-fixture"
-      description: "Writes the pod.json fixture used by the JMESPath exercises"
+      description: "Writes the pod.json fixture and an empty answers folder"
       type: "file"
       source: "bootstrap/03-seed-fixture.sh"
 
+# Applied only by `astrona test`: the reference answer files.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Writes the reference answer files"
+      type: "file"
+      source: "solution/apply.sh"
+
 validation:
   scripts:
-    - name: "verify-jp-query-answers"
-      description: "Confirms each kyverno jp query answer file holds the correct value"
+    - name: "name-answer"
+      description: "name.txt holds the Pod name"
       type: "file"
-      source: "validation/validate-completed.sh"
+      source: "validation/validate-name.sh"
+      hint: "Query metadata.name with -u and redirect the output into ~/jp-lab/answers/name.txt."
+    - name: "namespace-answer"
+      description: "namespace.txt holds the trimmed namespace"
+      type: "file"
+      source: "validation/validate-namespace.sh"
+      hint: "trim takes two arguments: the text and the characters to cut. Cut a single space."
+    - name: "environment-answer"
+      description: "environment.txt holds the lower-case environment label"
+      type: "file"
+      source: "validation/validate-environment.sh"
+      hint: "Wrap metadata.labels.environment in to_lower."
+    - name: "web-image-answer"
+      description: "web-image.txt holds the image of the first container"
+      type: "file"
+      source: "validation/validate-web-image.sh"
+      hint: "Use the index [0] on spec.containers, not a projection, so you get one value."
+    - name: "pattern-check-answer"
+      description: "pattern-check.txt holds the pattern_match result"
+      type: "file"
+      source: "validation/validate-pattern-check.sh"
+      hint: "The pattern comes first, as a raw string in single quotes, and the image second."
+
+teardown:
+  keepCluster: false

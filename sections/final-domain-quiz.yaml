@@ -1,0 +1,689 @@
+# Final domain knowledge check across all four sections.
+---
+schema_version: 1
+kind: question_bank
+id: ats009-final
+course_id: ATS009
+exam_code: KCA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: domain
+  id: kyverno-cli
+  title: Kyverno CLI
+questions:
+- id: ats009-final-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Install the Kyverno CLI from a GitHub release tarball for a
+    specific version, operating system and processor type.
+  source_readings:
+  - sections/section-010/module-01/course-01-installation-methods.md
+  prompt: A CI step must install Kyverno CLI version `v1.13.2` on a Linux machine
+    with an `arm64` processor, straight from the GitHub release. Which asset do you
+    download?
+  options:
+  - id: a
+    text: "`kyverno-cli_1.13.2_arm64_linux.tar.gz`"
+    explanation: This name has no `v` before the version and swaps the system and
+      the processor type. Release assets follow one fixed pattern, so this file does
+      not exist.
+  - id: b
+    text: "`kyverno-cli_v1.13.2_windows_arm64.zip`"
+    explanation: This is the Windows asset. Windows releases are `.zip` files, and
+      the file would not run on Linux.
+  - id: c
+    text: "`kyverno-cli_v1.13.2_linux_arm64.tar.gz`"
+    explanation: Correct. Assets follow the pattern `kyverno-cli_v{VERSION}_{OS}_{ARCH}.tar.gz`,
+      and the release has Linux assets for `x86_64`, `arm64` and `s390x`.
+  - id: d
+    text: "`kyverno-cli_v1.13.2_linux_x86_64.tar.gz`"
+    explanation: This is the right system but the wrong processor type. The binary
+      inside is built for `x86_64` and does not run on an `arm64` machine.
+  correct_option: c
+  explanation: Release assets follow the pattern `kyverno-cli_v{VERSION}_{OS}_{ARCH}.tar.gz`.
+    A wrong version, system or processor type points at a file that does not exist.
+- id: ats009-final-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Check a downloaded release against the published `checksums.txt`
+    file, and find which `kyverno` file your shell really runs.
+  source_readings:
+  - sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
+  prompt: You copied the `v1.13.2` binary to `/usr/local/bin/kyverno`, but `kyverno
+    version` shows an older number. `ls /usr/local/bin/kyverno` shows the new file.
+    What is the best next command?
+  options:
+  - id: a
+    text: "`kyverno version --force`"
+    explanation: There is no such flag, and it would not change which file the shell
+      runs.
+  - id: b
+    text: "`which -a kyverno`, then read the first path it prints"
+    explanation: Correct. `which -a` lists every copy in `PATH` order. The first one
+      wins, so an older copy earlier on the `PATH` explains the old number.
+  - id: c
+    text: "`kyverno completion bash`"
+    explanation: This prints a completion script. It does not tell you which file
+      the shell runs.
+  - id: d
+    text: Install the controller again with `kubectl create -f install.yaml`
+    explanation: The controller and the CLI are separate. Reinstalling the controller
+      does not change the file your shell runs.
+  correct_option: b
+  explanation: When two copies exist, the folder that comes first on the `PATH` wins.
+    `which -a kyverno` shows them all in order.
+- id: ats009-final-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: List the subcommands with `kyverno help`, and generate a bash
+    completion script for the `kyverno` command.
+  source_readings:
+  - sections/section-010/module-01/course-02-verifying-installation-and-cli-structure.md
+  prompt: You ran `kyverno completion bash > /etc/bash_completion.d/kyverno`. In the
+    same terminal, pressing the tab key after `kyverno ` offers nothing. What is the
+    most likely reason?
+  options:
+  - id: a
+    text: The CLI does not support completion for bash.
+    explanation: It does. `kyverno completion` supports bash, zsh, fish and PowerShell.
+  - id: b
+    text: The script has to be applied to the cluster with `kubectl apply`.
+    explanation: A completion script is for your shell. It has nothing to do with
+      the cluster.
+  - id: c
+    text: "`/etc/bash_completion.d` must hold a file named `kyverno.sh`."
+    explanation: The file name `kyverno` is correct. The folder is read by name, and
+      the problem is when it is read.
+  - id: d
+    text: The shell reads completion scripts when it starts. Open a new shell, or
+      run `source /etc/bash_completion.d/kyverno`.
+    explanation: Correct. The script did not exist when this shell started, so the
+      shell has not loaded it yet.
+  correct_option: d
+  explanation: A shell loads completion scripts at start-up. Open a new shell, or
+    load the script by hand with `source`.
+- id: ats009-final-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Generate a completion script for `bash`, `zsh`, `fish` or `powershell`,
+    and say where each shell reads it.
+  source_readings:
+  - sections/section-010/module-02/course-02-completion-and-the-plugin-name.md
+  prompt: You use zsh. You want the tab key to finish `kyverno` commands in every
+    new terminal. What do you do?
+  options:
+  - id: a
+    text: Save the output of `kyverno completion zsh` as a file named `_kyverno` in
+      a folder on your `fpath`, then open a new shell.
+    explanation: Correct. zsh looks for completion functions in the folders on its
+      `fpath`, and the script defines the function `_kyverno`.
+  - id: b
+    text: Save the output of `kyverno completion bash` in `/etc/bash_completion.d/kyverno`.
+    explanation: That is the bash route. zsh does not read that folder, and the bash
+      script is written for bash.
+  - id: c
+    text: Run `kyverno completion zsh` and read the output. The shell reads it by
+      itself.
+    explanation: The command only prints the script. Nothing reads it until you save
+      it or load it.
+  - id: d
+    text: Run `kyverno completion powershell | Out-String | Invoke-Expression`.
+    explanation: That line is for PowerShell, not zsh.
+  correct_option: a
+  explanation: Each shell needs its own script in its own place. For zsh, save the
+    script as `_kyverno` on the `fpath`, or load it with `source <(kyverno completion
+    zsh)`.
+- id: ats009-final-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Run kyverno apply against local resource files, offline, with
+    no cluster
+  source_readings:
+  - sections/section-020/module-01/course-01-offline-policy-apply.md
+  prompt: You have no `kubeconfig` on this machine and want to test a draft policy
+    against a Pod file. Which command works?
+  options:
+  - id: a
+    text: "`kyverno apply policy.yaml --cluster`"
+    explanation: 'This option is wrong: `--cluster` reads live resources, so it needs
+      a working `kubeconfig`.'
+  - id: b
+    text: "`kyverno apply policy.yaml --resource pod.yaml`"
+    explanation: Correct. With `--resource`, `apply` reads the files from disk and
+      needs no cluster at all.
+  - id: c
+    text: "`kubectl apply -f policy.yaml`"
+    explanation: 'This option is wrong: `kubectl` needs a cluster and would install
+      the policy instead of testing it on a file.'
+  - id: d
+    text: "`kyverno apply pod.yaml --resource policy.yaml`"
+    explanation: 'This option is wrong: the policy comes first and the resource goes
+      behind `--resource`; swapped, the files are read in the wrong roles.'
+  correct_option: b
+  explanation: Correct. With `--resource`, `apply` reads the files from disk and needs
+    no cluster at all.
+- id: ats009-final-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use the exit code of kyverno apply to stop a script or a pipeline
+    when a policy fails
+  source_readings:
+  - sections/section-020/module-01/course-01-offline-policy-apply.md
+  - sections/section-020/module-03/course-02-warnings-and-exit-codes.md
+  prompt: A pipeline step runs `kyverno apply policy.yaml -r pod.yaml ; echo done`
+    and is always green, even when the Pod fails. Why?
+  options:
+  - id: a
+    text: The step takes the exit code of the last command, `echo`, which is `0`.
+    explanation: Correct. Let `kyverno apply` be the last command or chain with `&&`,
+      so its non-zero exit code stops the step.
+  - id: b
+    text: "`kyverno apply` always exits `0` and only prints failures."
+    explanation: 'This option is wrong: a `fail` or `error` makes the run exit `1`.'
+  - id: c
+    text: Pipelines ignore exit codes below `10`.
+    explanation: 'This option is invented: any non-zero code stops a normal step.'
+  - id: d
+    text: "`echo` clears the failure from the policy report."
+    explanation: 'This option is wrong: `echo` has no link to the CLI result.'
+  correct_option: a
+  explanation: Correct. Let `kyverno apply` be the last command or chain with `&&`,
+    so its non-zero exit code stops the step.
+- id: ats009-final-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Run apply against a live cluster with --cluster, limited to
+    one namespace with -n
+  source_readings:
+  - sections/section-020/module-01/course-03-applying-against-a-live-cluster-and-policy-reports.md
+  prompt: You run `kyverno apply policy.yaml --cluster -n orders`. What happens to
+    the Pods in `orders`?
+  options:
+  - id: a
+    text: They are read and reported on. Nothing in the cluster changes.
+    explanation: Correct. `--cluster` is read-only. Nothing is admitted, changed or
+      rejected until you apply the policy with `kubectl`.
+  - id: b
+    text: Pods without the label are deleted.
+    explanation: 'This option is wrong: `apply` never deletes anything.'
+  - id: c
+    text: The policy is installed in the cluster.
+    explanation: 'This option is wrong: installing a policy needs `kubectl apply`.'
+  - id: d
+    text: Only new Pods are checked.
+    explanation: 'This option is wrong: `--cluster` reads the resources that already
+      exist.'
+  correct_option: a
+  explanation: Correct. `--cluster` is read-only. Nothing is admitted, changed or
+    rejected until you apply the policy with `kubectl`.
+- id: ats009-final-q08
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Run a mutate rule with kyverno apply and save the patched resource
+    with -o
+  source_readings:
+  - sections/section-020/module-02/course-01-mutating-resources-and-saving-the-result.md
+  prompt: You ran a mutate rule with `-o patched.yaml`. The new label is in `patched.yaml`
+    but not in the source Pod file. Is that expected?
+  options:
+  - id: a
+    text: No. The command failed and you should run it again.
+    explanation: 'This option is wrong: a missing label in the source is the normal
+      result.'
+  - id: b
+    text: No. `-o` should have overwritten the source file.
+    explanation: 'This option is wrong: `-o` names a different file.'
+  - id: c
+    text: Yes. `apply` only reads the source and writes the result to the `-o` file.
+    explanation: Correct. The source file is never edited.
+  - id: d
+    text: Yes. But only because the Pod already had a label.
+    explanation: 'This option is wrong: the source stays as it was whether or not
+      it had labels.'
+  correct_option: c
+  explanation: Correct. The source file is never edited.
+- id: ats009-final-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Run a generate rule with kyverno apply and read the resource
+    it builds from a trigger
+  source_readings:
+  - sections/section-020/module-02/course-02-generating-resources-from-a-trigger.md
+  prompt: You run a generate rule on `mars.yaml` (a `Namespace`) with `-o`. Where
+    is the generated `ConfigMap`?
+  options:
+  - id: a
+    text: In the cluster, in the namespace `mars`.
+    explanation: 'This option is wrong: `apply` creates nothing in a cluster.'
+  - id: b
+    text: In `mars.yaml`, added to the file.
+    explanation: 'This option is wrong: the source file is not edited.'
+  - id: c
+    text: Nowhere. Offline apply cannot run generate rules.
+    explanation: 'This option is wrong: data-based generate rules run fine offline.'
+  - id: d
+    text: In the `-o` file. You create it yourself if you want it live.
+    explanation: Correct. `apply` writes the result to the file and nothing else.
+  correct_option: d
+  explanation: Correct. `apply` writes the result to the file and nothing else.
+- id: ats009-final-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Supply request data such as request.operation and namespace
+    labels
+  source_readings:
+  - sections/section-020/module-02/course-03-request-data-user-info-operation-and-namespace-labels.md
+  prompt: A rule only reacts to `UPDATE` requests. Offline, how do you test it?
+  options:
+  - id: a
+    text: You cannot. Offline runs only know `CREATE`.
+    explanation: 'This option is wrong: the operation can be set.'
+  - id: b
+    text: Rename the Pod file to `update.yaml`.
+    explanation: 'This option is wrong: file names carry no request data.'
+  - id: c
+    text: Use `--set request.operation=UPDATE`, or put it in a values file.
+    explanation: Correct. Request data not in the resource comes from `--set` or a
+      values file. Namespace labels use `namespaceSelector` in the values file.
+  - id: d
+    text: Add `--cluster -n apps`.
+    explanation: 'This option is wrong: that reads live resources and does not set
+      the operation.'
+  correct_option: c
+  explanation: Correct. Request data not in the resource comes from `--set` or a values
+    file. Namespace labels use `namespaceSelector` in the values file.
+- id: ats009-final-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Turn Audit failures into warnings and choose the exit code for
+    warnings
+  source_readings:
+  - sections/section-020/module-03/course-02-warnings-and-exit-codes.md
+  prompt: An Audit policy finds one violation. Which flags give the exit code `3`?
+  options:
+  - id: a
+    text: "`--warn-exit-code 3` only"
+    explanation: 'This option is wrong: with no `--audit-warn`, the violation stays
+      a failure and the code is `1`.'
+  - id: b
+    text: "`--audit-warn --warn-exit-code 3`"
+    explanation: Correct. `--audit-warn` makes the violation a warning, and `--warn-exit-code`
+      gives warnings their number.
+  - id: c
+    text: "`--audit-warn` only"
+    explanation: 'This option is wrong: warnings then exit `0`.'
+  - id: d
+    text: "`--warn-no-pass` only"
+    explanation: 'This option is wrong: it works together with `--warn-exit-code`
+      and does not set a number by itself.'
+  correct_option: b
+  explanation: Correct. `--audit-warn` makes the violation a warning, and `--warn-exit-code`
+    gives warnings their number.
+- id: ats009-final-q12
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Write a kyverno-test.yaml manifest that lists policies, resources
+    and expected results.
+  source_readings:
+  - sections/section-030/module-01/course-01-test-manifest-anatomy.md
+  prompt: A results entry in a `kyverno-test.yaml` must name the resource it is about.
+    Which value goes into its `resources` list?
+  options:
+  - id: a
+    text: "`good-pod.yaml`"
+    explanation: That is the file path. File paths belong in the top-level `resources`
+      list, not inside a `results` entry.
+  - id: b
+    text: "`good-pod`"
+    explanation: Correct. Inside `results`, `resources` takes the `metadata.name`
+      of the resource.
+  - id: c
+    text: "`v1/Pod/good-pod`"
+    explanation: This is a long form that some table outputs show. The manifest wants
+      the plain name.
+  - id: d
+    text: "`Pod`"
+    explanation: That is the kind, which has its own `kind` field in the entry.
+  correct_option: b
+  explanation: Inside a `results` entry, `resources` lists resource names, and `kind`
+    is a separate field. File paths belong in the top-level `resources` list.
+- id: ats009-final-q13
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read the output and the exit code of kyverno test.
+  source_readings:
+  - sections/section-030/module-01/course-01-test-manifest-anatomy.md
+  - sections/section-030/module-01/course-03-running-and-interpreting-test-results.md
+  prompt: The table shows `Pass` next to a Pod that breaks the rule. What does that
+    mean?
+  options:
+  - id: a
+    text: The claim in the manifest was `fail`, and the rule really failed the Pod,
+      so the claim matched.
+    explanation: Correct. The result column says whether the claim matched the real
+      verdict, not whether the Pod is good.
+  - id: b
+    text: The Pod passed the policy, and the test has a bug.
+    explanation: A Pod that breaks the rule does not pass it. The column is about
+      the claim.
+  - id: c
+    text: The policy is turned off for that Pod.
+    explanation: A turned-off rule would give `skip`, not a matched claim.
+  - id: d
+    text: The test did not run for that Pod.
+    explanation: A row in the table means that the case ran.
+  correct_option: a
+  explanation: In `kyverno test`, `Pass` means that the claim matched the real result.
+- id: ats009-final-q14
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name the rule correctly in a results entry for autogen rules,
+    and test foreach and deny rules.
+  source_readings:
+  - sections/section-030/module-01/course-02-autogen-names-foreach-and-deny.md
+  prompt: A `foreach` rule with a `deny` block checks every container of a Pod. One
+    of three containers is privileged. How many verdicts does the test give for that
+    Pod, and what is it?
+  options:
+  - id: a
+    text: 'Three, one for each container: one `fail` and two `pass`'
+    explanation: The test gives one verdict for each resource, not for each list item.
+  - id: b
+    text: 'One for the Pod: `fail`'
+    explanation: Correct. One item that trips the `deny` condition makes the whole
+      resource `fail`.
+  - id: c
+    text: 'One for the Pod: `pass`, because most containers are fine'
+    explanation: A single bad item is enough to fail the resource.
+  - id: d
+    text: None, because `foreach` rules cannot be tested
+    explanation: They can, with a normal `results` entry.
+  correct_option: b
+  explanation: A foreach rule gives one verdict for each resource. One bad item fails
+    the resource.
+- id: ats009-final-q15
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why a suite that always passes proves nothing, and decide
+    whether a pipeline can rely on kyverno test.
+  source_readings:
+  - sections/section-030/module-01/course-03-running-and-interpreting-test-results.md
+  prompt: A pipeline runs `kyverno test .` on CLI `1.13.2`. Someone deletes every
+    `kyverno-test.yaml` file. What does the pipeline show, and what should you add?
+  options:
+  - id: a
+    text: It shows green, because the CLI prints `No test yamls available` and exits
+      `0`. Add a check that test manifests exist.
+    explanation: Correct. On `1.13.2`, an empty folder is not an error, so the pipeline
+      must check for the manifests itself.
+  - id: b
+    text: It shows red, because a missing suite is an error.
+    explanation: Newer CLIs can be told to fail on this, but `1.13.2` exits `0`.
+  - id: c
+    text: It shows red, because there are no results to compare.
+    explanation: With no results to compare, nothing disagrees. The exit code stays
+      `0`.
+  - id: d
+    text: It shows green, and nothing needs to change.
+    explanation: This is the hole in the gate. Add a check that test manifests exist.
+  correct_option: a
+  explanation: An empty suite exits `0` on `1.13.2`, so the pipeline must check that
+    manifests exist.
+- id: ats009-final-q16
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the Resource diff reason and tell which side is wrong.
+  source_readings:
+  - sections/section-030/module-02/course-01-testing-mutate-rules.md
+  - sections/section-030/module-02/course-02-testing-generate-rules.md
+  prompt: A test fails with the reason `Resource diff`. What does that tell you for
+    sure?
+  options:
+  - id: a
+    text: The policy is broken.
+    explanation: The policy may be fine. The expected file may be wrong.
+  - id: b
+    text: The resource the rule produced is not equal to the expected file.
+    explanation: Correct. It does not say which side is right, so compare the policy
+      and the file.
+  - id: c
+    text: The input resource file is not valid YAML.
+    explanation: A broken input file gives a load error, not a diff.
+  - id: d
+    text: The rule did not match the resource.
+    explanation: A rule that does not match gives `skip`.
+  correct_option: b
+  explanation: A `Resource diff` says that the produced and expected resources differ.
+    Decide which side is wrong before you fix it.
+- id: ats009-final-q17
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Write a results entry for a generate rule and a clone rule.
+  source_readings:
+  - sections/section-030/module-02/course-02-testing-generate-rules.md
+  prompt: A generate rule builds a `NetworkPolicy` for every new Namespace. In the
+    `results` entry for namespace `team-a`, what do `resources` and `kind` name?
+  options:
+  - id: a
+    text: 'The trigger: `team-a` and `Namespace`. The NetworkPolicy goes into the
+      `generatedResource` file.'
+    explanation: Correct. The trigger is the input, and the generated resource is
+      the output file.
+  - id: b
+    text: The generated NetworkPolicy and its kind
+    explanation: The generated resource belongs in the `generatedResource` file.
+  - id: c
+    text: Both the Namespace and the NetworkPolicy
+    explanation: The entry names the trigger only.
+  - id: d
+    text: Nothing. A generate entry has no `resources`
+    explanation: Every entry names the resources it is about.
+  correct_option: a
+  explanation: For generate rules, `resources` and `kind` name the trigger. The output
+    is the `generatedResource` file.
+- id: ats009-final-q18
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Test a PolicyException and tell the reasons for skip apart.
+  source_readings:
+  - sections/section-030/module-03/course-02-exceptions-and-skip-results.md
+  prompt: "`legacy-pod` and `bad-pod` both break a rule. A `PolicyException` names
+    only `legacy-pod`, and the manifest lists it under `exceptions`. Which claims
+    are right?"
+  options:
+  - id: a
+    text: "`legacy-pod`: `fail`, `bad-pod`: `fail`"
+    explanation: The exception frees `legacy-pod`, so it is not judged by the rule.
+  - id: b
+    text: "`legacy-pod`: `skip`, `bad-pod`: `fail`"
+    explanation: Correct. The waiver frees one Pod. The second claim proves that the
+      waiver is narrow.
+  - id: c
+    text: "`legacy-pod`: `pass`, `bad-pod`: `fail`"
+    explanation: An excepted resource is skipped, not passed.
+  - id: d
+    text: "`legacy-pod`: `skip`, `bad-pod`: `skip`"
+    explanation: The exception names only `legacy-pod`, so `bad-pod` is still judged.
+  correct_option: b
+  explanation: An excepted resource is `skip`. Always add a resource without a waiver
+    and claim `fail`.
+- id: ats009-final-q19
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Print a string result without the JSON quotes.
+  source_readings:
+  - sections/section-040/module-01/course-01-jmespath-fundamentals-via-kyverno-jp-query.md
+  prompt: You run `kyverno jp query -i pod.json 'metadata.name'` and get `"checkout-web-7f8c9"`
+    with quotes. Which flag prints the name without the quotes?
+  options:
+  - id: a
+    text: "`-c`"
+    explanation: This keeps the JSON on one line. It does not remove quotes.
+  - id: b
+    text: "`-q`"
+    explanation: This reads the expression from a file. It does not change how the
+      result is printed.
+  - id: c
+    text: "`-u`"
+    explanation: Correct. The flag `-u` prints a string result as plain text, without
+      the JSON quotes.
+  - id: d
+    text: "`-i`"
+    explanation: This names the input file. It does not change the output.
+  correct_option: c
+  explanation: "`-u` prints strings unquoted, `-c` prints compact JSON, `-q` reads
+    the expression from a file and `-i` reads the input from a file."
+- id: ats009-final-q20
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Tell a raw string literal from a JSON literal.
+  source_readings:
+  - sections/section-040/module-01/course-02-core-jmespath-syntax-and-literals.md
+  prompt: Which expression compares the label `team` with the text checkout?
+  options:
+  - id: a
+    text: "``metadata.labels.team == `checkout` ``"
+    explanation: A bare word inside backticks is not valid JSON, so this fails to
+      compile.
+  - id: b
+    text: "`metadata.labels.team == 'checkout'`"
+    explanation: Correct. Single quotes make a raw string literal, which is the way
+      to write plain text.
+  - id: c
+    text: "`metadata.labels.team == checkout`"
+    explanation: A bare word is read as a field name, not as text.
+  - id: d
+    text: "`metadata.labels.team = 'checkout'`"
+    explanation: A single equals sign is not a JMESPath operator.
+  correct_option: b
+  explanation: Single quotes hold raw strings. Backticks hold JSON literals such as
+    numbers, booleans, lists and objects.
+- id: ats009-final-q21
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Flatten a list of lists.
+  source_readings:
+  - sections/section-040/module-02/course-01-shaping-lists-and-objects.md
+  prompt: '`items[*].spec.containers[*].name` returns `[["web","sidecar"],["worker"],["batch"]]`.
+    How do you get one flat list of names?'
+  options:
+  - id: a
+    text: "`items[*].spec.containers[].name`"
+    explanation: Correct. The empty brackets `[]` pour the inner lists into one list.
+  - id: b
+    text: "`items[*].spec.containers[*].name[]`"
+    explanation: The flatten goes on the list of lists, not on a single name.
+  - id: c
+    text: "`flatten(items[*].spec.containers[*].name)`"
+    explanation: JMESPath has no function named `flatten`. The operator is `[]`.
+  - id: d
+    text: "`items[].spec.containers[0].name`"
+    explanation: This takes only the first container of each Pod, so `sidecar` is
+      lost.
+  correct_option: a
+  explanation: "`[*]` keeps the shape of the lists and `[]` flattens one level."
+- id: ats009-final-q22
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Sort a list by an expression.
+  source_readings:
+  - sections/section-040/module-02/course-02-stock-functions-for-sorting-counting-and-combining.md
+  prompt: Which expression returns the Pod names sorted by restarts, smallest first?
+  options:
+  - id: a
+    text: "`sort_by(items, status.restarts)[*].metadata.name`"
+    explanation: The second argument needs the `&` prefix so it runs on each item.
+  - id: b
+    text: "`sort(items, &status.restarts)[*].metadata.name`"
+    explanation: "`sort` takes a list of numbers or strings, not an expression."
+  - id: c
+    text: "`items[*].metadata.name | sort_by(@)`"
+    explanation: "`sort_by` needs an expression to sort by, so this call is incomplete."
+  - id: d
+    text: "`sort_by(items, &status.restarts)[*].metadata.name`"
+    explanation: Correct. `&` marks an expression to run on each item later.
+  correct_option: d
+  explanation: "`sort_by` and `max_by` take the list and an expression that starts
+    with `&`."
+- id: ats009-final-q23
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Open a string that holds JSON and double a quantity.
+  source_readings:
+  - sections/section-040/module-02/course-03-kyverno-functions-on-real-policy-data.md
+  prompt: '`data.limits` is the string `"{\"memory\":\"256Mi\"}"`. Which expression
+    gives `"512Mi"`?'
+  options:
+  - id: a
+    text: "`multiply(data.limits.memory, `2`)`"
+    explanation: "`data.limits` is a string, so there is no `memory` key to read yet."
+  - id: b
+    text: "`multiply(parse_json(data.limits).memory, `2`)`"
+    explanation: Correct. `parse_json` makes the object, and `multiply` keeps the
+      `Mi` unit.
+  - id: c
+    text: "`multiply(parse_json(data.limits).memory, 2)`"
+    explanation: The `2` without backticks is not a number to JMESPath, so this fails.
+  - id: d
+    text: "`add(parse_json(data.limits).memory, `2`)`"
+    explanation: This adds 2, so the answer is not `512Mi`.
+  correct_option: b
+  explanation: "`parse_json` opens the string, and `multiply` works on quantities.
+    Numbers go in backticks."
+- id: ats009-final-q24
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Measure the time between two moments.
+  source_readings:
+  - sections/section-040/module-02/course-03-kyverno-functions-on-real-policy-data.md
+  prompt: How many arguments does `time_since` take in the 1.13.2 CLI?
+  options:
+  - id: a
+    text: 'Two: the start and the end'
+    explanation: The signature has three arguments, so two fail.
+  - id: b
+    text: 'One: the start, measured against now'
+    explanation: There is no one-argument form.
+  - id: c
+    text: 'Three: a layout, the start and the end'
+    explanation: Correct. An empty string as the layout means the standard format.
+  - id: d
+    text: 'Four: the layout, the start, the end and a unit'
+    explanation: The unit is part of the answer, not an argument.
+  correct_option: c
+  explanation: Run `kyverno jp function time_since` to see the signature `time_since(string,
+    string, string)`.
+- id: ats009-final-q25
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Supply policy variables and the requester to a test with a values
+    file and a user info file.
+  source_readings:
+  - sections/section-030/module-03/course-01-variables-and-user-info.md
+  prompt: A rule blocks a Pod in the platform tier unless the requester has the cluster
+    role `cluster-admin`. You want one test that shows the rule lets an administrator
+    through and another that shows it turns a developer away. How do you give the
+    test the requester?
+  options:
+  - id: a
+    text: Add a `userinfo` line to each manifest that points at a user info file with
+      the roles, and keep one manifest for each requester.
+    explanation: Correct. The user info file is the requester's badge. A manifest
+      uses one badge, so you write one manifest for each requester.
+  - id: b
+    text: Put the roles in the Pod's labels.
+    explanation: Labels describe the ship, not who asked for it. The rule reads the
+      requester, not the labels.
+  - id: c
+    text: Run `kyverno test` as a different operating system user.
+    explanation: The CLI does not read your system user name. The requester comes
+      from the user info file.
+  - id: d
+    text: List the roles in the `results` entry.
+    explanation: A `results` entry states the expected verdict. It cannot define who
+      sent the request.
+  correct_option: a
+  explanation: The `userinfo` field names a file with the requester's user name and
+    roles. A manifest can name one file, so each requester needs its own manifest.

@@ -1,0 +1,278 @@
+# Knowledge check for section 040. Listed in astrona.yaml as a `type: quiz` entry after each module's lab.
+---
+schema_version: 1
+kind: question_bank
+id: ats009-040
+course_id: ATS009
+exam_code: KCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-040
+  title: kyverno jp
+questions:
+- id: ats009-040-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Print a string result without the JSON quotes.
+  source_readings:
+  - sections/section-040/module-01/course-01-jmespath-fundamentals-via-kyverno-jp-query.md
+  prompt: You run `kyverno jp query -i pod.json 'metadata.name'` and get `"checkout-web-7f8c9"` with quotes. Which flag prints the name without the quotes?
+  options:
+  - id: a
+    text: "`-c`"
+    explanation: This keeps the JSON on one line. It does not remove quotes.
+  - id: b
+    text: "`-q`"
+    explanation: This reads the expression from a file. It does not change how the result is printed.
+  - id: c
+    text: "`-u`"
+    explanation: Correct. The flag `-u` prints a string result as plain text, without the JSON quotes.
+  - id: d
+    text: "`-i`"
+    explanation: This names the input file. It does not change the output.
+  correct_option: c
+  explanation: "`-u` prints strings unquoted, `-c` prints compact JSON, `-q` reads the expression from a file and `-i` reads the input from a file."
+- id: ats009-040-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read the comment line the CLI prints before the result.
+  source_readings:
+  - sections/section-040/module-01/course-01-jmespath-fundamentals-via-kyverno-jp-query.md
+  prompt: You run `kyverno jp query -i pod.json -u 'metadata.name' > name.txt` and open `name.txt`. What does the file hold?
+  options:
+  - id: a
+    text: Only the name
+    explanation: The CLI also prints a comment line, so the file holds more than the name.
+  - id: b
+    text: The expression as a `#` comment line, then the name
+    explanation: Correct. The CLI prints `# <expression>` before the result, and a redirect saves both lines.
+  - id: c
+    text: An empty file
+    explanation: The output goes to the file, so it is not empty.
+  - id: d
+    text: The name in double quotes
+    explanation: The flag `-u` removes the quotes, and the comment line is still there.
+  correct_option: b
+  explanation: The CLI prints `# <expression>` first. A redirected file holds that comment line and the result. Scripts that read the file must skip the comment.
+- id: ats009-040-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Tell a raw string literal from a JSON literal.
+  source_readings:
+  - sections/section-040/module-01/course-02-core-jmespath-syntax-and-literals.md
+  prompt: Which expression compares the label `team` with the text checkout?
+  options:
+  - id: a
+    text: "``metadata.labels.team == `checkout` ``"
+    explanation: A bare word inside backticks is not valid JSON, so this fails to compile.
+  - id: b
+    text: "`metadata.labels.team == 'checkout'`"
+    explanation: Correct. Single quotes make a raw string literal, which is the way to write plain text.
+  - id: c
+    text: "`metadata.labels.team == checkout`"
+    explanation: A bare word is read as a field name, not as text.
+  - id: d
+    text: "`metadata.labels.team = 'checkout'`"
+    explanation: A single equals sign is not a JMESPath operator.
+  correct_option: b
+  explanation: Single quotes hold raw strings. Backticks hold JSON literals such as numbers, booleans, lists and objects.
+- id: ats009-040-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Use `trim` with its two arguments.
+  source_readings:
+  - sections/section-040/module-01/course-03-kyvernos-custom-jmespath-functions.md
+  prompt: The namespace is `"  checkout  "`. Which expression removes the spaces with Kyverno's `trim`?
+  options:
+  - id: a
+    text: "`trim(metadata.namespace)`"
+    explanation: In 1.13.2 `trim` takes two arguments, so one argument fails.
+  - id: b
+    text: "`strip(metadata.namespace)`"
+    explanation: There is no `strip` function in the list from `kyverno jp function`.
+  - id: c
+    text: "`trim(' ', metadata.namespace)`"
+    explanation: The text comes first and the characters to cut come second.
+  - id: d
+    text: "`trim(metadata.namespace, ' ')`"
+    explanation: Correct. The second argument holds the characters to cut, here one space.
+  correct_option: d
+  explanation: "`trim(text, characters)` cuts the given characters from both ends of the text."
+- id: ats009-040-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Flatten a list of lists.
+  source_readings:
+  - sections/section-040/module-02/course-01-shaping-lists-and-objects.md
+  prompt: '`items[*].spec.containers[*].name` returns `[["web","sidecar"],["worker"],["batch"]]`. How do you get one flat list of names?'
+  options:
+  - id: a
+    text: "`items[*].spec.containers[].name`"
+    explanation: Correct. The empty brackets `[]` pour the inner lists into one list.
+  - id: b
+    text: "`items[*].spec.containers[*].name[]`"
+    explanation: The flatten goes on the list of lists, not on a single name.
+  - id: c
+    text: "`flatten(items[*].spec.containers[*].name)`"
+    explanation: JMESPath has no function named `flatten`. The operator is `[]`.
+  - id: d
+    text: "`items[].spec.containers[0].name`"
+    explanation: This takes only the first container of each Pod, so `sidecar` is lost.
+  correct_option: a
+  explanation: "`[*]` keeps the shape of the lists and `[]` flattens one level."
+- id: ats009-040-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Write a key that contains dots and slashes.
+  source_readings:
+  - sections/section-040/module-02/course-01-shaping-lists-and-objects.md
+  prompt: A Pod has the label `app.kubernetes.io/name`. How do you read it?
+  options:
+  - id: a
+    text: "`metadata.labels.app.kubernetes.io/name`"
+    explanation: The dots are read as steps down, and the slash is a syntax error.
+  - id: b
+    text: "`metadata.labels['app.kubernetes.io/name']`"
+    explanation: Single quotes make a string literal. They do not select a key.
+  - id: c
+    text: '`metadata.labels."app.kubernetes.io/name"`'
+    explanation: Correct. Double quotes make the whole text one key.
+  - id: d
+    text: "`metadata.labels.app\\.kubernetes\\.io/name`"
+    explanation: A backslash does not escape dots in JMESPath.
+  correct_option: c
+  explanation: A key with dots or slashes goes in double quotes inside the expression.
+- id: ats009-040-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Sort a list by an expression.
+  source_readings:
+  - sections/section-040/module-02/course-02-stock-functions-for-sorting-counting-and-combining.md
+  prompt: Which expression returns the Pod names sorted by restarts, smallest first?
+  options:
+  - id: a
+    text: "`sort_by(items, status.restarts)[*].metadata.name`"
+    explanation: The second argument needs the `&` prefix so it runs on each item.
+  - id: b
+    text: "`sort(items, &status.restarts)[*].metadata.name`"
+    explanation: "`sort` takes a list of numbers or strings, not an expression."
+  - id: c
+    text: "`items[*].metadata.name | sort_by(@)`"
+    explanation: "`sort_by` needs an expression to sort by, so this call is incomplete."
+  - id: d
+    text: "`sort_by(items, &status.restarts)[*].metadata.name`"
+    explanation: Correct. `&` marks an expression to run on each item later.
+  correct_option: d
+  explanation: "`sort_by` and `max_by` take the list and an expression that starts with `&`."
+- id: ats009-040-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Do not trust the order of object keys.
+  source_readings:
+  - sections/section-040/module-02/course-01-shaping-lists-and-objects.md
+  prompt: You need the label keys of a Pod in a stable order for a comparison. What do you do?
+  options:
+  - id: a
+    text: Wrap it as `sort(keys(labels))`
+    explanation: Correct. `sort` gives the same order on every run.
+  - id: b
+    text: Use `keys(labels)`, which always returns them in the order of the file
+    explanation: The order is not fixed, so the answer can change between runs.
+  - id: c
+    text: Use `labels.*`, which sorts by key
+    explanation: "`.*` returns values in no fixed order."
+  - id: d
+    text: Add the `-u` flag
+    explanation: The flag changes quoting, not the order.
+  correct_option: a
+  explanation: "`keys` and `.*` give no fixed order, so sort before you compare."
+- id: ats009-040-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Open a string that holds JSON and double a quantity.
+  source_readings:
+  - sections/section-040/module-02/course-03-kyverno-functions-on-real-policy-data.md
+  prompt: '`data.limits` is the string `"{\"memory\":\"256Mi\"}"`. Which expression gives `"512Mi"`?'
+  options:
+  - id: a
+    text: "`multiply(data.limits.memory, `2`)`"
+    explanation: "`data.limits` is a string, so there is no `memory` key to read yet."
+  - id: b
+    text: "`multiply(parse_json(data.limits).memory, `2`)`"
+    explanation: Correct. `parse_json` makes the object, and `multiply` keeps the `Mi` unit.
+  - id: c
+    text: "`multiply(parse_json(data.limits).memory, 2)`"
+    explanation: The `2` without backticks is not a number to JMESPath, so this fails.
+  - id: d
+    text: "`add(parse_json(data.limits).memory, `2`)`"
+    explanation: This adds 2, so the answer is not `512Mi`.
+  correct_option: b
+  explanation: "`parse_json` opens the string, and `multiply` works on quantities. Numbers go in backticks."
+- id: ats009-040-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Give a missing key a default.
+  source_readings:
+  - sections/section-040/module-02/course-04-defaults-requests-and-debugging-tools.md
+  prompt: A request has no annotation `example.com/owner`. Which expression returns `unknown` instead of an error?
+  options:
+  - id: a
+    text: '`request.object.metadata.annotations."example.com/owner" || ''unknown''`'
+    explanation: Correct. `||` supplies the right side when the left side is missing or empty.
+  - id: b
+    text: '`request.object.metadata.annotations."example.com/owner" && ''unknown''`'
+    explanation: "`&&` returns the right side only when the left side is true, so a missing key stays missing."
+  - id: c
+    text: '`request.object.metadata.annotations."example.com/owner" ?? ''unknown''`'
+    explanation: There is no `??` operator in JMESPath.
+  - id: d
+    text: "`default(request.object.metadata.annotations, 'unknown')`"
+    explanation: There is no `default` function in the list of functions.
+  correct_option: a
+  explanation: "`||` gives a default. A missing object key is an error, so a default keeps the policy running."
+- id: ats009-040-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Measure the time between two moments.
+  source_readings:
+  - sections/section-040/module-02/course-03-kyverno-functions-on-real-policy-data.md
+  prompt: How many arguments does `time_since` take in the 1.13.2 CLI?
+  options:
+  - id: a
+    text: 'Two: the start and the end'
+    explanation: The signature has three arguments, so two fail.
+  - id: b
+    text: 'One: the start, measured against now'
+    explanation: There is no one-argument form.
+  - id: c
+    text: 'Three: a layout, the start and the end'
+    explanation: Correct. An empty string as the layout means the standard format.
+  - id: d
+    text: 'Four: the layout, the start, the end and a unit'
+    explanation: The unit is part of the answer, not an argument.
+  correct_option: c
+  explanation: Run `kyverno jp function time_since` to see the signature `time_since(string, string, string)`.
+- id: ats009-040-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read an expression as the engine does.
+  source_readings:
+  - sections/section-040/module-02/course-04-defaults-requests-and-debugging-tools.md
+  prompt: A pipe or filter groups differently than you expected. Which command shows how the engine reads the expression?
+  options:
+  - id: a
+    text: "`kyverno jp function`"
+    explanation: This lists the functions. It does not show how an expression is read.
+  - id: b
+    text: "`kyverno jp query -c`"
+    explanation: This prints compact JSON of the result. It does not show the tree.
+  - id: c
+    text: "`kyverno jp explain`"
+    explanation: There is no `explain` command for `jp`.
+  - id: d
+    text: "`kyverno jp parse 'expression'`"
+    explanation: Correct. It prints the syntax tree with one node for each field, index and operator.
+  correct_option: d
+  explanation: "`kyverno jp parse` prints the syntax tree of an expression."

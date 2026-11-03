@@ -1,0 +1,45 @@
+metadata:
+  name: "ats-009-lab-011"
+  docs:
+    solution: "solution.md"
+    question: "question.md"
+
+bootstrap:
+  init:
+    - name: "install-kyverno-cli"
+      description: "Installs the standalone kyverno CLI binary"
+      type: "file"
+      source: "bootstrap/01-install-kyverno-cli.sh"
+    - name: "setup-gate-lab"
+      description: "Creates the apps namespace, the Enforce and Audit policies and two Pod files in /root/apply-gate"
+      type: "file"
+      source: "bootstrap/02-setup-gate-lab.sh"
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Writes the exception, the exit code file and the table file"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "exception"
+      description: "A PolicyException for legacy-app makes the Enforce policy exit 0"
+      type: "file"
+      source: "validation/validate-exception.sh"
+      hint: "Save /root/apply-gate/legacy-exception.yaml as kind PolicyException with policyName require-team-label, ruleNames check-team-label and the Pod name legacy-app in match, then pass it with -e."
+    - name: "gate-exit-code"
+      description: "gate-exit-code.txt holds the exit code 3 of the Audit run"
+      type: "file"
+      source: "validation/validate-gate-exit-code.sh"
+      hint: "Run kyverno apply audit-policy.yaml on both Pods with --audit-warn --warn-exit-code 3, then save the value of $? straight after the command with echo $? > /root/apply-gate/gate-exit-code.txt."
+    - name: "gate-table"
+      description: "gate-table.txt shows legacy-app as Warn and compliant-app as Pass"
+      type: "file"
+      source: "validation/validate-gate-table.sh"
+      hint: "Run the Audit policy on both Pods with --audit-warn --table and redirect the output to /root/apply-gate/gate-table.txt."
+
+teardown:
+  keepCluster: false

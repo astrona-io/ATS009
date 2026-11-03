@@ -19,9 +19,36 @@ bootstrap:
       type: "file"
       source: "bootstrap/03-setup-apply-lab.sh"
 
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Runs the offline apply, applies the policy and saves the cluster report"
+      type: "file"
+      source: "solution/apply.sh"
+
 validation:
   scripts:
-    - name: "verify-apply-workflow"
-      description: "Confirms the offline apply results, the live policy enforcement, and the cluster policy report"
+    - name: "offline-results"
+      description: "offline-results.txt lists compliant-app as pass and legacy-app as fail"
       type: "file"
-      source: "validation/validate-completed.sh"
+      source: "validation/validate-offline-results.sh"
+      hint: "Run kyverno apply without --cluster, pass both Pod files with --resource, and add --table so passing Pods are listed. Redirect the output to /root/apply-lab/offline-results.txt."
+    - name: "live-policy"
+      description: "The require-team-label policy is live and set to Enforce"
+      type: "file"
+      source: "validation/validate-live-policy.sh"
+      hint: "Apply /root/apply-lab/policy.yaml with kubectl apply -f. Do not change validationFailureAction."
+    - name: "cluster-report"
+      description: "cluster-report.yaml is a ClusterPolicyReport with a pass and a fail"
+      type: "file"
+      source: "validation/validate-cluster-report.sh"
+      hint: "Run kyverno apply with --cluster, --namespace apps and --policy-report, and redirect the output to /root/apply-lab/cluster-report.yaml."
+    - name: "live-enforcement"
+      description: "legacy-app still runs and a new unlabelled Pod is rejected"
+      type: "file"
+      source: "validation/validate-live-enforcement.sh"
+      hint: "Apply the policy first, then try kubectl run new-app --image=nginx:alpine -n apps. Do not delete legacy-app."
+
+teardown:
+  keepCluster: false

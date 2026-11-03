@@ -19,9 +19,36 @@ bootstrap:
       type: "file"
       source: "bootstrap/03-setup-capstone.sh"
 
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: "apply-solution"
+      description: "Runs the offline apply with the values file, applies the policy, creates the Pods and saves the report"
+      type: "file"
+      source: "solution/apply.sh"
+
 validation:
   scripts:
-    - name: "verify-section-020-capstone"
-      description: "Confirms the offline apply results with a mocked context, live enforcement, and the cluster policy report"
+    - name: "offline-results"
+      description: "offline-results.txt shows trusted-app as pass and untrusted-app as fail"
       type: "file"
-      source: "validation/validate-completed.sh"
+      source: "validation/validate-offline-results.sh"
+      hint: "Run kyverno apply offline with -f /root/apply-capstone/values.yaml and --table, and redirect the output to /root/apply-capstone/offline-results.txt. Without -f the ConfigMap lookup cannot be answered."
+    - name: "live-policy"
+      description: "The check-registry-cm policy is live and set to Enforce"
+      type: "file"
+      source: "validation/validate-live-policy.sh"
+      hint: "Apply /root/apply-capstone/policy.yaml with kubectl apply -f."
+    - name: "live-pods"
+      description: "trusted-app is admitted and untrusted-app is turned away"
+      type: "file"
+      source: "validation/validate-live-pods.sh"
+      hint: "Create trusted-app from good-img.yaml. Create untrusted-app from bad-img.yaml and read the rejection. Do not edit the image of either file."
+    - name: "cluster-report"
+      description: "cluster-report.yaml is a ClusterPolicyReport that shows trusted-app as pass"
+      type: "file"
+      source: "validation/validate-cluster-report.sh"
+      hint: "Run kyverno apply with --cluster, --namespace apps and --policy-report, with no -f, and redirect the output to /root/apply-capstone/cluster-report.yaml."
+
+teardown:
+  keepCluster: false
