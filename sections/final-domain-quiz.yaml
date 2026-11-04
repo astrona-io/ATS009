@@ -5,7 +5,7 @@ kind: question_bank
 id: ats009-final
 course_id: ATS009
 exam_code: KCA
-status: draft
+status: alpha
 provenance: Original practice material written for this course; not official exam
   questions.
 scope:
