@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://astrona.io/courses/kyverno-certified-associate-kca">
+    <img src="https://astrona.io/courses/kyverno-certified-associate-kca/domains/ATS009.svg" alt="ATS009: Kyverno CLI, part of the Kyverno Certified Associate course on Astrona" width="100%">
+  </a>
+</p>
+
 # ATS009 - KCA: Kyverno CLI
 
 [![Liberapay](https://img.shields.io/badge/Liberapay-Support_Astrona.io-F6C915?logo=liberapay&logoColor=black&style=for-the-badge)](https://liberapay.com/Astrona.io)
